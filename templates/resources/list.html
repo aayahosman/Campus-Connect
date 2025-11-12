@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Community Resources</h2>
+
+<div class="resource-header">
+  <a href="{{ url_for('resources.add_resource') }}" class="btn">+ Add New Resource</a>
+</div>
+
+<div class="resource-grid">
+  {% for r in resources %}
+  <div class="resource-card">
+    <h3>{{ r.title }}</h3>
+    <p><strong>Category:</strong> {{ r.category }}</p>
+    <p>{{ r.description }}</p>
+
+    {% if r.contact_info %}
+    <p><strong>Contact:</strong> {{ r.contact_info }}</p>
+    {% endif %}
+
+    <p><strong>Status:</strong>
+      <span class="status {{ r.status }}">{{ r.status }}</span>
+    </p>
+
+    <div class="actions">
+      <a href="{{ url_for('resources.edit_resource', resource_id=r.resource_id) }}" class="btn-sm edit">Edit</a>
+      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" 
+            method="POST" class="inline-form">
+        <button type="submit" class="btn-sm delete">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p>No resources posted yet. Add one to get started!</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

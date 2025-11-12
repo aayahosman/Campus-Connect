@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Add a Resource</h2>
+
+<form method="POST" action="{{ url_for('resources.add_resource') }}">
+  <label>Title:</label><br>
+  <input type="text" name="title" required><br><br>
+
+  <label>Category:</label><br>
+  <input type="text" name="category" required><br><br>
+
+  <label>Description:</label><br>
+  <textarea name="description" required></textarea><br><br>
+
+  <label>Contact Info:</label><br>
+  <input type="text" name="contact_info"><br><br>
+
+  <label>Status:</label><br>
+  <select name="status">
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+  </select><br><br>
+
+  <button type="submit">Add Resource</button>
+</form>
+
+<a href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+{% endblock %}

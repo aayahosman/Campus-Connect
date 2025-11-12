@@ -1,24 +1,19 @@
 from flask import (Flask, render_template, make_response, url_for, request,
                    redirect, flash, session, send_from_directory, jsonify)
 from werkzeug.utils import secure_filename
-app = Flask(__name__)
-
 import secrets
 import cs304dbi as dbi
+from resources_routes import resource_bp
 
-# we need a secret_key to use flash() and sessions
+
+app = Flask(__name__)
 app.secret_key = secrets.token_hex()
-
-# configure DBI
-
-# For Lookup, use 'wmdb'
-# For CRUD and Ajax, use your personal db
-# For project work, use your team db
-
-print(dbi.conf('ww123_db'))
-
-# This gets us better error messages for certain common request errors
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+
+print(dbi.conf('cs304jas_db'))
+
+from resources_routes import resource_bp
+app.register_blueprint(resource_bp)
 
 @app.route('/')
 def index():
@@ -32,10 +27,9 @@ def about():
 if __name__ == '__main__':
     import sys, os
     if len(sys.argv) > 1:
-        # arg, if any, is the desired port number
         port = int(sys.argv[1])
-        assert(port>1024)
+        assert(port > 1024)
     else:
         port = os.getuid()
     app.debug = True
-    app.run('0.0.0.0',port)
+    app.run('0.0.0.0', port)
