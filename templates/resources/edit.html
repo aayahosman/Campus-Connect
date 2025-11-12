@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Resource</h2>
+
+<form method="POST" action="{{ url_for('resources.edit_resource', resource_id=resource.resource_id) }}">
+  <label>Title:</label><br>
+  <input type="text" name="title" value="{{ resource.title }}" required><br><br>
+
+  <label>Category:</label><br>
+  <input type="text" name="category" value="{{ resource.category }}" required><br><br>
+
+  <label>Description:</label><br>
+  <textarea name="description" required>{{ resource.description }}</textarea><br><br>
+
+  <label>Contact Info:</label><br>
+  <input type="text" name="contact_info" value="{{ resource.contact_info }}"><br><br>
+
+  <label>Status:</label><br>
+  <select name="status">
+    <option value="active" {% if resource.status == 'active' %}selected{% endif %}>Active</option>
+    <option value="inactive" {% if resource.status == 'inactive' %}selected{% endif %}>Inactive</option>
+  </select><br><br>
+
+  <button type="submit">Save Changes</button>
+</form>
+
+<a href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+{% endblock %}

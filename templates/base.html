@@ -1,43 +1,36 @@
 <!doctype html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <!-- for mobile-friendly pages -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name=author content="">
-    <title>{{ page_title }}</title>
-    <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
-    {% block head_stuff %} {% endblock %}
-</head>
-<body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ page_title or "Campus Connect" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <header>
+      <h1>Campus Connect</h1>
+      <nav>
+        <a href="{{ url_for('index') }}">Home</a> |
+        <a href="{{ url_for('about') }}">About</a> |
+        <a href="{{ url_for('resources.list_resources') }}">Resources</a>
+      </nav>
+    </header>
 
-{% block nav %}
-<nav>
-  <ul>
-    <li><a href="{{url_for('index')}}">Home</a></li>
-    <li><a href="{{url_for('about')}}">About</a></li>
-  </ul>
-</nav>
-{% endblock %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul id="flashes">
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
 
+    <main>
+      {% block content %}{% endblock %}
+    </main>
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div id="messages">
-  {% for msg in messages %}
-  <p>{{msg}}</p>
-  {% endfor %}
-</div>
-{% endif %}
-{% endwith %}
-            
-{% block main_content %}
-<h1>Welcome!</h1>
-{% endblock %}
-
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  {% block end_scripts %}
-  {% endblock %}
-  
-</body>
+    <footer>
+      <p>&copy; 2025 Campus Connect</p>
+    </footer>
+  </body>
 </html>
