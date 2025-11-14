@@ -12,12 +12,14 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 print(dbi.conf('cs304jas_db'))
 
-from resources_routes import resource_bp
+from login import auth_bp 
+app.register_blueprint(auth_bp)
 app.register_blueprint(resource_bp)
 
 @app.route('/')
 def index():
-    return render_template('main.html', page_title='Main Page')
+    print("index")
+    return render_template('login.html', page_title='Main Page')
 
 @app.route('/about/')
 def about():
