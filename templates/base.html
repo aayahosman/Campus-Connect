@@ -12,16 +12,19 @@
         <a href="{{ url_for('index') }}">Home</a> |
         <a href="{{ url_for('about') }}">About</a> |
         <a href="{{ url_for('resources.list_resources') }}">Resources</a>
+        {% if session.get('logged_in') %}
+          | <a href="{{ url_for('auth.logout') }}">Logout</a>
+        {% endif %}
       </nav>
     </header>
 
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
-        <ul id="flashes">
-          {% for msg in messages %}
-            <li>{{ msg }}</li>
+        <div id="flashes">
+          {% for category, msg in messages %}
+            <div class="flash-{{ category }}">{{ msg }}</div>
           {% endfor %}
-        </ul>
+        </div>
       {% endif %}
     {% endwith %}
 
