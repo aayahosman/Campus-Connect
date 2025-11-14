@@ -13,7 +13,7 @@ def getConn():
 @event_bp.route('/')
 def list_events():
     conn = getConn()
-    curs = conn.cursor()
+    curs = conn.cursor(dbi.dictCursor)
     curs.execute('''
         select * from events ORDER BY created_at DESC
         ''')
@@ -28,29 +28,119 @@ def add_event():
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event']
-        category = request.form['category']
         description = request.form['description']
-        contact_info = request.form['contact_info']
-        status = request.form['status']
 
         # temp placeholder
         created_by = session.get('user_id', 1)
         created_at = datetime.datetime.now()
 
         curs.execute('''
-            insert into events(title, date_of_event, category, description,
-                            contact_info, status, created_by, created_at)
-            values(%s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (title, date_of_event, category, description, contact_info, status,
-                created_by, created_at))
+            insert into events(title, date_of_event, description,
+                                         created_by, created_at)
+            values(%s, %s, %s, %s, %s)
+        ''', (title, date_of_event, description, created_by, created_at))
         conn.commit()
         flash("Event created successfully!")
         return redirect(url_for('event_bp.list_events'))
 
-    return render_template('add_event.html')
+    return render_template('events/add.html')
 
 # Shows event full details & RSVP
 @event_bp.route('/<int:event_id>')
 def event_details(event_id):
     conn = getConn()
+    curs = conn.cursor(dbi.dictCursor)
+
+    curs.execute('select * from events where event_id = %s', (event_id,))
+    event = curs.fetchone()
+
+    if event is None:
+        flash("Event not found.")
+        return redirect(url_for('event_bp.list_events'))
+
+    curs.execute('select * from rsvp where event_id = %s', (event_id))
+    rsvps = curs.fetchall()
+
+    return render_template('events/detail.html',
+                                event = event,
+                                rsvps = rsvps)
+
+# Update event
+@event_bp.route('/edit/<int:event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    conn = getConn()
+    curs = conn.cursor(dbi.dictCursor)
+
+    if request.method == 'POST':
+        title = request.form['title']
+        date_of_event = request.form['date_of_event']
+        description = request.form['description']
+        curs.execute('''
+            UPDATE events
+            SET title=%s, date_of_event=%s, description=%s
+            WHERE event_id=%s
+        ''', (title, date_of_event, description, event_id))
+        conn.commit()
+        flash("Event updated successfully!")
+        return redirect(url_for('event_bp.list_events'))
+
+    curs.execute('select * from events where event_id = %s', (event_id))
+    event = curs.fetchone()
+    if event:  # Make sure the event exists
+        # --- Format datetime for <input type="datetime-local"> ---
+        event['date_of_event'] = event['date_of_event'].strftime('%Y-%m-%dT%H:%M')
+
+    return render_template('events/edit.html', event=event)
+
+# Delete event
+@event_bp.route('/delete/<int:event_id>', methods=['POST'])
+def delete_event(event_id):
+    conn = getConn()
     curs = conn.cursor()
+
+    # delete RSVPs first
+    curs.execute('DELETE FROM rsvp WHERE event_id=%s', (event_id,))
+
+    # now delete the event
+    curs.execute('DELETE FROM events WHERE event_id=%s', (event_id,))
+    conn.commit()
+    flash("Event and associated RSVPs deleted successfully!")
+    return redirect(url_for('event_bp.list_events'))
+
+
+# RSVP
+@event_bp.route('/<int:event_id>/rsvp', methods = ['POST'])
+def rsvp(event_id):
+    conn = getConn()
+    curs = conn.cursor(dbi.dictCursor)
+
+    user_id = session.get('user_id', 1)
+    created_at = datetime.datetime.now()
+    status = request.form.get('status')
+
+    if not status:  # safety check
+        flash("Please select an RSVP option.")
+        return redirect(url_for('event_bp.event_details', event_id=event_id))
+
+    # Check if the user already RSVPed
+    curs.execute('SELECT * FROM rsvp WHERE event_id=%s AND created_by=%s', (event_id, user_id))
+    existing = curs.fetchone()
+
+    if existing:
+        # Update the existing RSVP
+        curs.execute('''
+            UPDATE rsvp
+            SET status=%s, created_at=%s
+            WHERE event_id=%s AND created_by=%s
+        ''', (status, created_at, event_id, user_id))
+        flash("Your RSVP has been updated.")
+    else:
+        # Insert new RSVP
+        curs.execute('''
+            INSERT INTO rsvp(event_id, created_by, status, created_at)
+            VALUES (%s, %s, %s, %s)
+        ''', (event_id, user_id, status, created_at))
+        flash("Your RSVP has been recorded.")
+
+    conn.commit()
+    return redirect(url_for('event_bp.event_details', event_id = event_id))

@@ -3,23 +3,23 @@ body {
     margin: 20px;
     background-color: #fdfdfd;
   }
-  
+
   header {
     background-color: #003366;
     color: white;
     padding: 10px;
   }
-  
+
   nav a {
     color: white;
     text-decoration: none;
     margin: 0 10px;
   }
-  
+
   nav a:hover {
     text-decoration: underline;
   }
-  
+
   /* ---------- Buttons ---------- */
   .btn {
     background-color: #0055aa;
@@ -29,11 +29,11 @@ body {
     border-radius: 6px;
     font-weight: 500;
   }
-  
+
   .btn:hover {
     background-color: #004080;
   }
-  
+
   .btn-sm {
     padding: 5px 8px;
     border-radius: 4px;
@@ -42,38 +42,38 @@ body {
     cursor: pointer;
     text-decoration: none;
   }
-  
+
   .edit {
     background-color: #1976d2;
     color: white;
   }
-  
+
   .edit:hover {
     background-color: #1259a3;
   }
-  
+
   .delete {
     background-color: #d32f2f;
     color: white;
   }
-  
+
   .delete:hover {
     background-color: #a82828;
   }
-  
+
   /* ---------- Resource Grid ---------- */
   .resource-header {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 15px;
   }
-  
+
   .resource-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
-  
+
   .resource-card {
     background: #ffffff;
     border: 1px solid #ddd;
@@ -82,59 +82,59 @@ body {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
-  
+
   .resource-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
   }
-  
+
   .resource-card h3 {
     margin-top: 0;
     color: #003366;
   }
-  
+
   .resource-card p {
     margin: 6px 0;
   }
-  
+
   .status.active {
     color: green;
     font-weight: 600;
   }
-  
+
   .status.inactive {
     color: #b33;
     font-weight: 600;
   }
-  
- 
+
+
   .actions {
     display: flex;
     justify-content: flex-start;
     gap: 8px;
     margin-top: 10px;
   }
-  
+
   .inline-form {
     display: inline;
   }
-  
+
 
   table {
     border-collapse: collapse;
     width: 100%;
     margin-top: 15px;
   }
-  
+
   th, td {
     border: 1px solid #ccc;
     padding: 8px;
   }
-  
+
   th {
     background-color: #eee;
   }
-  
+
   button {
     background-color: #0066cc;
     color: white;
@@ -142,4 +142,62 @@ body {
     padding: 5px 8px;
     cursor: pointer;
   }
-  
+
+  /* ---------- Event Grid ---------- */
+.event-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.event-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.event-card h3 {
+    margin-top: 0;
+    color: #003366;
+}
+
+.event-card p {
+    margin: 6px 0;
+}
+
+/* RSVP / Status styling */
+.status.active {
+    color: green;
+    font-weight: 600;
+}
+
+.status.inactive {
+    color: #b33;
+    font-weight: 600;
+}
+
+/* Actions: Edit / Delete / RSVP buttons */
+.actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.inline-form {
+    display: inline;
+}

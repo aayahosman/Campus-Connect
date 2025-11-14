@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ event.title }}</h2>
+
+<p><strong>Date & Time:</strong> {{ event.date_of_event }}</p>
+<p>{{ event.description }}</p>
+
+
+{% if event.address1 %}
+<p><strong>Location:</strong> {{ event.address1 }} {% if event.address2 %}, {{ event.address2 }}{% endif %}, {{ event.city }}, {{ event.state }} {{ event.postal_code }}</p>
+{% endif %}
+
+<p><strong>Status:</strong> {{ event.status }}</p>
+
+<hr>
+
+<h3>RSVP</h3>
+<form action="{{ url_for('event_bp.rsvp', event_id=event.event_id) }}" method="POST">
+  <label for="status">RSVP:</label>
+  <select name="status" id="status">
+    <option value="yes" {% if user_rsvp and user_rsvp.status == 'yes' %}selected{% endif %}>Yes</option>
+    <option value="no" {% if user_rsvp and user_rsvp.status == 'no' %}selected{% endif %}>No</option>
+    <option value="maybe" {% if user_rsvp and user_rsvp.status == 'maybe' %}selected{% endif %}>Maybe</option>
+  </select>
+  <button type="submit" class="btn-sm">Submit</button>
+</form>
+<hr>
+
+<h3>Attendees</h3>
+{% if rsvps %}
+  <ul>
+    {% for r in rsvps %}
+      <li>User ID: {{ r.created_by }} — Status: {{ r.status }} — Submitted at: {{ r.created_at }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No one has RSVP’d yet. Be the first!</p>
+{% endif %}
+
+<a href="{{ url_for('event_bp.list_events') }}">Back to Events</a>
+{% endblock %}

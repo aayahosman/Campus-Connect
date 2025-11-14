@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import secrets
 import cs304dbi as dbi
 from resources_routes import resource_bp
+from event_routes import event_bp
 
 
 app = Flask(__name__)
@@ -12,9 +13,11 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 print(dbi.conf('cs304jas_db'))
 
-from login import auth_bp 
+from login import auth_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(resource_bp)
+app.register_blueprint(event_bp)
+
 
 @app.route('/')
 def index():
