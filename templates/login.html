@@ -1,190 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<style>
-/* Layout: two boxes side by side */
-.form-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
-}
+<link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
 
-.form-box {
-    flex: 1 1 300px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-    background-color: #f9f9f9;
-}
+<div class="auth-wrapper">
+    <div class="auth-box">
+        <h2>Welcome Back</h2>
 
-form h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-}
+        <form action="{{ url_for('auth.login') }}" method="POST">
+            <label>Email</label>
+            <input type="text" name="email" required>
 
-/* Normal labels (text above input) */
-.field-label {
-    display: block;
-    margin-top: 1rem;
-    font-weight: bold;
-}
+            <label>Password</label>
+            <input type="password" name="password" required>
 
-.field-label input {
-    display: block;
-    width: 100%;
-    padding: 0.4rem;
-    margin-top: 0.3rem;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* General input styling (for login form too) */
-form input[type="text"],
-form input[type="password"] {
-    width: 100%;
-    padding: 0.4rem;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* Fieldset and radios */
-fieldset {
-    margin-top: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-}
-
-/* Each radio option on its own line, nicely aligned */
-fieldset label {
-    display: flex;
-    align-items: center;   /* vertically center radio + text */
-    gap: 0.4rem;
-    margin-top: 0.3rem;
-    font-weight: normal;
-}
-
-fieldset input[type="radio"] {
-    width: auto;
-}
-
-/* Buttons */
-button {
-    display: block;
-    margin: 1rem auto;
-    padding: 0.6rem 1.2rem;
-    border: none;
-    background-color: #007acc;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #005fa3;
-}
-.flash-error {
-    background-color: #ffe0e0;
-    border-left: 6px solid #cc0000;
-    padding: 0.9rem 1rem;
-    margin: 1rem 0;
-    border-radius: 6px;
-    color: #800;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-.flash-success {
-    background-color: #e6ffe6;
-    border-left: 6px solid #009900;
-    padding: 0.9rem 1rem;
-    margin: 1rem 0;
-    border-radius: 6px;
-    color: #064d06;
-    font-weight: bold;
-    font-size: 1rem;
-}
-
-</style>
-
-<h1>Welcome to Campus Connect</h1>
-<p>Please login or join using the forms below:</p>
-
-<div class="form-container">
-    <!-- Left: Join form -->
-    <div class="form-box">
-        <form id="joinform" action="{{ url_for('auth.join') }}" method="post">
-            <h2>Join</h2>
-
-            <label class="field-label">Full Name
-                <input type="text" name="full_name" required>
-            </label>
-
-            <label class="field-label">Email
-                <input type="text" name="email" required
-                       pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-                       title="Please enter a valid email address">
-            </label>
-
-            <label class="field-label">Password
-                <input type="password" name="password1" required>
-            </label>
-
-            <label class="field-label">Retype Password
-                <input type="password" name="password2" required>
-            </label>
-
-            <fieldset>
-                <legend>Role</legend>
-                <label>
-                    <input required type="radio" name="role" value="admin">
-                    Admin
-                </label>
-
-                <label>
-                    <input required type="radio" name="role" value="student">
-                    Student
-                </label>
-            </fieldset>
-
-            <button type="submit">Sign Up</button>
+            <button type="submit" class="btn">Login</button>
         </form>
-    </div>
 
-    <!-- Right: Login form -->
-    <div class="form-box">
-        <form id="loginform" action="{{ url_for('auth.login') }}" method="post">
-            <h2>Login</h2>
-
-            <label class="field-label">Email
-                <input type="text" name="email" required>
-            </label>
-
-            <label class="field-label">Password
-                <input type="password" name="password" required>
-            </label>
-
-            <button type="submit">Login</button>
-        </form>
+        <p class="switch-text">
+            New here?
+            <a href="{{ url_for('auth.show_signup') }}">Create an account</a>
+        </p>
     </div>
 </div>
-{% endblock %}
 
-{% block jquery_scripts %}
-<script>
-$("#joinform").on('submit', function (event) {
-     var pw1 = $(this).find('[name=password1]').val();
-     var pw2 = $(this).find('[name=password2]').val();
-     if (pw1 != pw2) {
-         event.preventDefault();
-         alert("Passwords don't match");
-     }
-});
-</script>
 {% endblock %}

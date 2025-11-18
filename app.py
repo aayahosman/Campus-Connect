@@ -26,7 +26,6 @@ def index():
 
 @app.route('/about/')
 def about():
-    flash('this is a flashed message')
     return render_template('about.html', page_title='About Us')
 
 if __name__ == '__main__':
