@@ -1,8 +1,80 @@
 {% extends "base.html" %}
 
-{% block main_content %}
-<h1>About Us</h1>
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
 
-<p>This app was written by Alice, Betty, and Cathy.</p>
+<style>
+.about-wrapper {
+    max-width: 750px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.about-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    color: #003366;
+}
+
+.about-text {
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.team-box {
+    margin-top: 2rem;
+    background: #ffffff;
+    padding: 1.2rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+.team-title {
+    font-weight: bold;
+    margin-bottom: 0.8rem;
+    color: #003366;
+}
+
+.team-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.team-list li {
+    margin-bottom: 0.4rem;
+    font-size: 1.05rem;
+}
+</style>
+
+<div class="about-wrapper">
+    <h1 class="about-title">About Campus Connect</h1>
+
+    <p class="about-text">
+        Campus Connect is a simple community hub for Wellesley College students 
+        to share resources, find on-campus civic engagement events, and stay connected. 
+        Our goal is to make it easier for students to access support, discover 
+        opportunities, and build community in one organized place.
+    </p>
+
+    <p class="about-text">
+        This project was created as part of CS304.
+    </p>
+
+    <div class="team-box">
+        <div class="team-title">Created by:</div>
+        <ul class="team-list">
+            <li> Aayah Osman</li>
+            <li> Shelley Zheng</li>
+            <li> Julie Zeng</li>
+        </ul>
+    </div>
+</div>
 
 {% endblock %}

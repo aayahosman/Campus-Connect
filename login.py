@@ -26,6 +26,10 @@ def about():
     """
     return render_template('about.html', page_title='About Us')
 
+@auth_bp.route('/signup/')
+def show_signup():
+    return render_template('signup.html', page_title='Campus Connect: Sign Up')
+
 @auth_bp.route('/join/', methods=['POST'])
 def join():
     """
