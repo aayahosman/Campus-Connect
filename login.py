@@ -6,16 +6,24 @@ import cs304dbi as dbi
 auth_bp = Blueprint('auth', __name__)  # name 'auth' is used in url_for
 
 def get_conn():
+    """
+    Obtain a database connection using the project's db wrapper.
+    """
     return dbi.connect()
 
 # Home should be the login page
 @auth_bp.route('/')
 def index():
-    print("index in login")
+    """
+    Render the application's landing page which is the login page. And renders login page HTML
+    """
     return render_template('login.html', page_title='Campus Connect: Login')
 
 @auth_bp.route('/about')
 def about():
+    """
+    Render the 'About Us' static page.
+    """
     return render_template('about.html', page_title='About Us')
 
 @auth_bp.route('/signup/')
@@ -24,12 +32,30 @@ def show_signup():
 
 @auth_bp.route('/join/', methods=['POST'])
 def join():
+    """
+    Handle user registration (POST /join/).
+
+    Expected form fields (request.form):
+    - full_name: user's full display name (required)
+    - email: user's email address (required, must be unique)
+    - password1: password entry (required)
+    - password2: password confirmation (required, must match password1)
+    - role: optional user role (e.g. 'student' or 'driver')
+
+    Checks if fields are filled correctly.
+    Hashes the password with bcrypt and inserts a new users row in to the table
+    Either redirects to login page on error or user's page on success.
+
+    
+    """
+
     full_name = request.form.get('full_name')
     email = request.form.get('email')
     passwd1 = request.form.get('password1')
     passwd2 = request.form.get('password2')
     role = request.form.get('role')
 
+    #check for missing fields
     if not (full_name and email and passwd1 and passwd2):
         flash('Please fill in all required fields')
         return redirect(url_for('auth.index'))
@@ -37,23 +63,25 @@ def join():
     if passwd1 != passwd2:
         flash('Passwords do not match')
         return redirect(url_for('auth.index'))
-
+    # Hash the password with bcrypt
     hashed = bcrypt.hashpw(passwd1.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     conn = get_conn()
     curs = dbi.cursor(conn)
+    #try to insert new user
     try:
         curs.execute('''
             INSERT INTO users (full_name, email, password_hash, role)
             VALUES (%s, %s, %s, %s)
         ''', [full_name, email, hashed, role])
         conn.commit()
+
+    #handles duplicate email error
     except Exception as err:
         err_str = str(err)
-
         # Detect duplicate email (MariaDB error code 1062)
         if "1062" in err_str or "Duplicate entry" in err_str:
-            flash("❗ This email is already registered. Please log in instead.", "error")
+            flash("This email is already registered. Please log in instead.", "error")
         else:
             flash(f"Something went wrong: {err}", "error")
 
@@ -62,7 +90,6 @@ def join():
     curs.execute('select last_insert_id()')
     uid = curs.fetchone()[0]
 
-    flash(f'Account created. Your user id is {uid}')
     session['full_name'] = full_name
     session['user_id'] = uid
     session['email'] = email
@@ -73,13 +100,28 @@ def join():
 
 @auth_bp.route('/login/', methods=['POST'])
 def login():
+    """
+    Handle user login (POST /login/).
+
+    Expected form fields:
+    - email: user's email address (required)
+    - password: plaintext password (required)
+
+    What it does:
+    - Validates credentials against stored bcrypt hash in the database.
+    - If succesful authentication, updates the session with user infro 
+    - Flashes error if entered password that is incorrect or email that does not exist
+    and redirects to login page on failure.
+    
+    """
+
     email = request.form.get('email')
     passwd = request.form.get('password')
-
+    #check for missing fields
     if not (email and passwd):
         flash('Please supply both email and password')
         return redirect(url_for('auth.index'))
-
+    #get user info from db
     conn = get_conn()
     curs = dbi.dict_cursor(conn)
     curs.execute('''
@@ -92,7 +134,7 @@ def login():
     if row is None:
         flash('Login incorrect. Try again or join.')
         return redirect(url_for('auth.index'))
-
+    #get stored hash and compare with bcrypt
     stored = row['password_hash']
     if bcrypt.checkpw(passwd.encode('utf-8'), stored.encode('utf-8')):
         flash('Successfully logged in as ' + email)
@@ -108,6 +150,17 @@ def login():
 
 @auth_bp.route('/user/<email>')
 def user(email):
+    """
+    Render a personalized greeting page for the logged-in user.
+
+    
+    - Verifies the session's 'email' matches the requested email to avoid
+      exposing other users' pages.
+    - Increments a simple 'visits' counter stored in the session.
+    - Renders 'greet.html' with user information from the session.
+    - On mismatch or missing session, flashes an error and redirects to
+      the login page.
+    """
     try:
         if 'email' in session and session.get('email') == email:
             user_id = session.get('user_id')
@@ -129,6 +182,14 @@ def user(email):
 
 @auth_bp.route('/logout/')
 def logout():
+    """
+    Log the current user out by clearing relevant session keys.
+
+    - If an 'email' is present in the session, removes authentication
+      related keys and flashes a confirmation message.
+    - If no user is logged in, flashes a message indicating that.
+
+    """
     if 'email' in session:
         session.pop('email', None)
         session.pop('user_id', None)
