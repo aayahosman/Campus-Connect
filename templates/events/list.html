@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Campus Events</h2>
+
+<div class="event-header">
+  <a href="{{ url_for('event_bp.add_event') }}" class="btn">+ Add New Event</a>
+</div>
+
+<div class="event-grid">
+  {% for e in events %}
+  <div class="event-card">
+    <h3>{{ e.title }}</h3>
+    <p><strong>Date & Time:</strong> {{ e.date_of_event }}</p>
+    <p>{{ e.description }}</p>
+
+    {% if e.address1 %}
+    <p><strong>Location:</strong> {{ e.address1 }} {% if e.address2 %}, {{ e.address2 }}{% endif %}, {{ e.city }}, {{ e.state }} {{ e.postal_code }}</p>
+    {% endif %}
+
+    <div class="actions">
+      <a href="{{ url_for('event_bp.event_details', event_id=e.event_id) }}" class="btn-sm view">View</a>
+      <a href="{{ url_for('event_bp.edit_event', event_id=e.event_id) }}" class="btn-sm edit">Edit</a>
+      <form action="{{ url_for('event_bp.delete_event', event_id=e.event_id) }}"
+            method="POST" class="inline-form">
+        <button type="submit" class="btn-sm delete">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <p>No events posted yet. Add one to get started!</p>
+  {% endfor %}
+</div>
+
+{% endblock %}
