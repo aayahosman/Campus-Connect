@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from cs304dbi import connect
 import cs304dbi as dbi
 import datetime
+from auth_utils import login_required
 dbi.conf('cs304jas_db')
 
 event_bp = Blueprint('event_bp', __name__, url_prefix='/events')
@@ -22,6 +23,7 @@ def list_events():
 
 # Add events
 @event_bp.route('/add', methods = ['GET', 'POST'])
+@login_required
 def add_event():
     conn = getConn()
     curs = conn.cursor()
@@ -29,9 +31,12 @@ def add_event():
         title = request.form['title']
         date_of_event = request.form['date_of_event']
         description = request.form['description']
+        
+        created_by = session.get('user_id')
+        if created_by is None:
+            flash("You must be logged in to create events.", "warning")
+            return redirect(url_for('auth.index'))
 
-        # temp placeholder
-        created_by = session.get('user_id', 1)
         created_at = datetime.datetime.now()
 
         curs.execute('''
@@ -96,49 +101,81 @@ def event_details(event_id):
 
 # Update event
 @event_bp.route('/edit/<int:event_id>', methods=['GET', 'POST'])
+@login_required
 def edit_event(event_id):
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
+
+    # Fetch the event once
+    curs.execute('SELECT * FROM events WHERE event_id=%s', (event_id,))
+    event = curs.fetchone()
+
+    if event is None:
+        flash("Event not found.", "warning")
+        return redirect(url_for('event_bp.list_events'))
+
+    # Ownership check
+    if event['created_by'] != session.get('user_id'):
+        flash("You can only edit events you created!", "warning")
+        return redirect(url_for('event_bp.list_events'))
 
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event']
         description = request.form['description']
+
         curs.execute('''
             UPDATE events
             SET title=%s, date_of_event=%s, description=%s
             WHERE event_id=%s
         ''', (title, date_of_event, description, event_id))
+
         conn.commit()
         flash("Event updated successfully!")
         return redirect(url_for('event_bp.list_events'))
 
-    curs.execute('select * from events where event_id = %s', (event_id))
-    event = curs.fetchone()
-    if event:  # Make sure the event exists
-        # --- Format datetime for <input type="datetime-local"> ---
+    # Format datetime for editing form
+    if event['date_of_event']:
         event['date_of_event'] = event['date_of_event'].strftime('%Y-%m-%dT%H:%M')
 
     return render_template('events/edit.html', event=event)
 
+
+
 # Delete event
 @event_bp.route('/delete/<int:event_id>', methods=['POST'])
+@login_required
 def delete_event(event_id):
     conn = getConn()
-    curs = conn.cursor()
+    curs = conn.cursor(dbi.dictCursor)
 
-    # delete RSVPs first
+    # Fetch event to check ownership
+    curs.execute('SELECT created_by FROM events WHERE event_id=%s', (event_id,))
+    event = curs.fetchone()
+
+    if event is None:
+        flash("Event not found.", "warning")
+        return redirect(url_for('event_bp.list_events'))
+
+    # Ownership check
+    if event['created_by'] != session.get('user_id'):
+        flash("You can only delete events you created!", "warning")
+        return redirect(url_for('event_bp.list_events'))
+
+    # Delete RSVPs first
     curs.execute('DELETE FROM rsvp WHERE event_id=%s', (event_id,))
 
-    # now delete the event
+    # Delete event
     curs.execute('DELETE FROM events WHERE event_id=%s', (event_id,))
     conn.commit()
+
     flash("Event and associated RSVPs deleted successfully!")
     return redirect(url_for('event_bp.list_events'))
 
 
 # RSVP
 @event_bp.route('/<int:event_id>/rsvp', methods = ['POST'])
+@login_required
 def rsvp(event_id):
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)

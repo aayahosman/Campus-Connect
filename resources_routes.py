@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from cs304dbi import connect
 import cs304dbi as dbi
+from auth_utils import login_required
 
 resource_bp = Blueprint('resources', __name__, url_prefix='/resources')
 
@@ -18,6 +19,7 @@ def list_resources():
 
 # ---- Create ----
 @resource_bp.route('/add', methods=['GET', 'POST'])
+@login_required
 def add_resource():
     if request.method == 'POST':
         title = request.form['title']
@@ -28,10 +30,11 @@ def add_resource():
 
         conn = getConn()
         curs = conn.cursor()
+        created_by = session.get('user_id')
         curs.execute('''
-            INSERT INTO resources (title, category, description, contact_info, status, created_by, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, NOW())
-        ''', (title, category, description, contact_info, status, 1))
+        INSERT INTO resources (title, category, description, contact_info, status, created_by, created_at)
+        VALUES (%s, %s, %s, %s, %s, %s, NOW())
+        ''', (title, category, description, contact_info, status, created_by))
         conn.commit()
         flash("Resource added successfully!")
         return redirect(url_for('resources.list_resources'))
@@ -39,9 +42,20 @@ def add_resource():
 
 # ---- Update ----
 @resource_bp.route('/edit/<int:resource_id>', methods=['GET', 'POST'])
+@login_required
 def edit_resource(resource_id):
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
+
+    # Fetch the resource + ownership
+    curs.execute('SELECT * FROM resources WHERE resource_id=%s', (resource_id,))
+    resource = curs.fetchone()
+
+    # Ownership check (BEFORE any updates)
+    if resource['created_by'] != session.get('user_id'):
+        flash("You can only edit resources you created!", "warning")
+        return redirect(url_for('resources.list_resources'))
+    
     if request.method == 'POST':
         title = request.form['title']
         category = request.form['category']
@@ -63,9 +77,20 @@ def edit_resource(resource_id):
 
 # ---- Delete ----
 @resource_bp.route('/delete/<int:resource_id>', methods=['POST'])
+@login_required
 def delete_resource(resource_id):
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
+
+    # Fetch resource owner
+    curs.execute('SELECT created_by FROM resources WHERE resource_id=%s', [resource_id])
+    resource = curs.fetchone()
+
+    # Ownership check
+    if resource['created_by'] != session.get('user_id'):
+        flash("You can only delete resources you created!", "warning")
+        return redirect(url_for('resources.list_resources'))
+    
     curs.execute('DELETE FROM resources WHERE resource_id=%s', (resource_id,))
     conn.commit()
     flash("Resource deleted successfully!")

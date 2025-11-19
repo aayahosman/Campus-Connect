@@ -3,7 +3,15 @@
 <h2>Community Resources</h2>
 
 <div class="resource-header">
+  {% if session.get('logged_in') %}
   <a href="{{ url_for('resources.add_resource') }}" class="btn">+ Add New Resource</a>
+  {% else %}
+  <a href="{{ url_for('resources.add_resource') }}" 
+       class="btn add-btn disabled-btn"
+       title="Login required">
+       + Add New Resource
+    </a>
+{% endif %}
 </div>
 
 <div class="resource-grid">
