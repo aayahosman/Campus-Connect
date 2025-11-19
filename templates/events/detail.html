@@ -30,7 +30,7 @@
 {% if rsvps %}
   <ul>
     {% for r in rsvps %}
-      <li>User ID: {{ r.created_by }} — Status: {{ r.status }} — Submitted at: {{ r.created_at }}</li>
+      <li>{{ r.name }} — Status: {{ r.status }}</li>
     {% endfor %}
   </ul>
 {% else %}

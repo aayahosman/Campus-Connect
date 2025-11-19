@@ -56,6 +56,7 @@ def event_details(event_id):
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
+    # get the event
     curs.execute('select * from events where event_id = %s', (event_id,))
     event = curs.fetchone()
 
@@ -63,12 +64,40 @@ def event_details(event_id):
         flash("Event not found.")
         return redirect(url_for('event_bp.list_events'))
 
-    curs.execute('select * from rsvp where event_id = %s', (event_id))
+    # get all rsvps for the attendees at event
+    curs.execute('''
+        select rsvp.status,
+                rsvp.created_at,
+                users.full_name as name
+        from rsvp
+        inner join users on rsvp.created_by = users.user_id
+        where rsvp.event_id = %s
+                 and rsvp.status in ('yes', 'maybe')
+            order by
+                case rsvp.status
+                    when 'yes' then 1
+                    when 'maybe' then 2
+                end,
+                case rsvp.status
+                when 'yes' then rsvp.created_at
+                else null
+                end asc
+        ''', (event_id,))
     rsvps = curs.fetchall()
+
+    # get the current user's RSVP if exists
+    user_id = session.get('user_id', 1)
+    curs.execute('''
+        select status
+        from rsvp
+        where event_id = %s and created_by = %s
+    ''', (event_id, user_id))
+    user_rsvp = curs.fetchone()
 
     return render_template('events/detail.html',
                                 event = event,
-                                rsvps = rsvps)
+                                rsvps = rsvps,
+                                user_rsvp = user_rsvp)
 
 # Update event
 @event_bp.route('/edit/<int:event_id>', methods=['GET', 'POST'])
