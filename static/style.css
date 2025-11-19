@@ -201,3 +201,25 @@ body {
 .inline-form {
     display: inline;
 }
+
+.flash-warning {
+  background-color: #fff4cc;
+  border-left: 6px solid #e6a800;
+  padding: 0.9rem 1rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+  color: #8a6d00;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.disabled-btn {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: #8ea8c8 !important;
+  color: white !important;
+}
+
+.disabled-btn:hover {
+  background-color: #8ea8c8;
+}
