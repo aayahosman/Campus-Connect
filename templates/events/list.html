@@ -15,11 +15,21 @@
 </div>
 
 <div class="event-grid">
+
   {% for e in events %}
   <div class="event-card">
+    
+    {% if e.created_by == session.get('user_id') %}
+      <div class="card-badge-you">Added by you</div>
+    {% endif %}
+
+    
     <h3>{{ e.title }}</h3>
     <p><strong>Date & Time:</strong> {{ e.date_of_event }}</p>
-    <p>{{ e.description }}</p>
+    <p><strong>Date & Time:</strong> {{ e.date_of_event }}</p>
+    <p><strong>Description: </strong> {{ e.description }}</p>
+    <p><strong>Contact Info: </strong> {{ e.contact_info if e.contact_info else "No contact info provided." }}</p>
+   
 
     {% if e.address1 %}
     <p><strong>Location:</strong> {{ e.address1 }} {% if e.address2 %}, {{ e.address2 }}{% endif %}, {{ e.city }}, {{ e.state }} {{ e.postal_code }}</p>
