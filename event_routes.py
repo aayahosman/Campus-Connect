@@ -29,9 +29,18 @@ def add_event():
     curs = conn.cursor()
     if request.method == 'POST':
         title = request.form['title']
-        date_of_event = request.form['date_of_event']
+        date_of_event = request.form['date_of_event'] 
+        category = request.form['category']
         description = request.form['description']
-        
+        contact_info = request.form.get('contact_info')
+
+        address1 = request.form.get('address1')
+        address2 = request.form.get('address2')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        postal_code = request.form.get('postal_code')
+
+            
         created_by = session.get('user_id')
         if created_by is None:
             flash("You must be logged in to create events.", "warning")
@@ -40,10 +49,25 @@ def add_event():
         created_at = datetime.datetime.now()
 
         curs.execute('''
-            insert into events(title, date_of_event, description,
-                                         created_by, created_at)
-            values(%s, %s, %s, %s, %s)
-        ''', (title, date_of_event, description, created_by, created_at))
+            INSERT INTO events (
+                title,
+                date_of_event,
+                category,
+                created_by,
+                created_at,
+                description,
+                contact_info,
+                address1,
+                address2,
+                city,
+                state,
+                postal_code
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (title, date_of_event, category,
+              created_by, created_at,
+              description, contact_info,
+              address1, address2, city, state, postal_code))
         conn.commit()
         flash("Event created successfully!")
         return redirect(url_for('event_bp.list_events'))
@@ -122,13 +146,34 @@ def edit_event(event_id):
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event']
+        category = request.form['category']
         description = request.form['description']
+        contact_info = request.form.get('contact_info')
+
+        address1 = request.form.get('address1')
+        address2 = request.form.get('address2')
+        city = request.form.get('city')
+        state = request.form.get('state')
+        postal_code = request.form.get('postal_code')
 
         curs.execute('''
             UPDATE events
-            SET title=%s, date_of_event=%s, description=%s
-            WHERE event_id=%s
-        ''', (title, date_of_event, description, event_id))
+            SET
+                title         = %s,
+                date_of_event = %s,
+                category      = %s,
+                description   = %s,
+                contact_info  = %s,
+                address1      = %s,
+                address2      = %s,
+                city          = %s,
+                state         = %s,
+                postal_code   = %s
+            WHERE event_id = %s
+        ''', (title, date_of_event, category,
+              description, contact_info,
+              address1, address2, city, state, postal_code,
+              event_id))
 
         conn.commit()
         flash("Event updated successfully!")

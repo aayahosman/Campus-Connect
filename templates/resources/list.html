@@ -18,6 +18,9 @@
   {% for r in resources %}
   <div class="resource-card">
     <h3>{{ r.title }}</h3>
+    {% if r.created_by == session.get('user_id') %}
+      <div class="card-badge-you">Added by you</div>
+    {% endif %}
     <p><strong>Category:</strong> {{ r.category }}</p>
     <p>{{ r.description }}</p>
 
