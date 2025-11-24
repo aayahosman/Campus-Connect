@@ -1,28 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Edit Resource</h2>
+<div class="form-card">
+  <h2>Edit Resource</h2>
 
-<form method="POST" action="{{ url_for('resources.edit_resource', resource_id=resource.resource_id) }}">
-  <label>Title:</label><br>
-  <input type="text" name="title" value="{{ resource.title }}" required><br><br>
+  <form action="{{ url_for('resources.edit_resource', resource_id=resource.resource_id) }}" method="POST">
 
-  <label>Category:</label><br>
-  <input type="text" name="category" value="{{ resource.category }}" required><br><br>
+    <div class="form-group">
+      <label>Title:</label>
+      <input type="text" name="title" value="{{ resource.title }}" required>
+    </div>
 
-  <label>Description:</label><br>
-  <textarea name="description" required>{{ resource.description }}</textarea><br><br>
+    <div class="form-group">
+      <label>Category:</label>
+      <input type="text" name="category" value="{{ resource.category }}" required>
+    </div>
 
-  <label>Contact Info:</label><br>
-  <input type="text" name="contact_info" value="{{ resource.contact_info }}"><br><br>
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea name="description" rows="4">{{ resource.description }}</textarea>
+    </div>
 
-  <label>Status:</label><br>
-  <select name="status">
-    <option value="active" {% if resource.status == 'active' %}selected{% endif %}>Active</option>
-    <option value="inactive" {% if resource.status == 'inactive' %}selected{% endif %}>Inactive</option>
-  </select><br><br>
+    <div class="form-group">
+      <label>Contact Info:</label>
+      <input type="text" name="contact_info" value="{{ resource.contact_info }}">
+    </div>
 
-  <button type="submit">Save Changes</button>
-</form>
+    <div class="form-group">
+      <label>Status:</label>
+      <select name="status">
+        <option value="active" {% if resource.status == 'active' %}selected{% endif %}>Active</option>
+        <option value="inactive" {% if resource.status == 'inactive' %}selected{% endif %}>Inactive</option>
+      </select>
+    </div>
 
-<a href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+    <button class="submit-btn" type="submit">Save Changes</button>
+
+  </form>
+
+  <a class="back-link" href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+</div>
 {% endblock %}
