@@ -1,28 +1,44 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Add a Resource</h2>
+<div class="form-card">
+  <h2>Add a Resource</h2>
 
-<form method="POST" action="{{ url_for('resources.add_resource') }}">
-  <label>Title:</label><br>
-  <input type="text" name="title" required><br><br>
+  <form action="" method="POST">
 
-  <label>Category:</label><br>
-  <input type="text" name="category" required><br><br>
+    <div class="form-group">
+      <label>Title:</label>
+      <input type="text" name="title" required>
+    </div>
 
-  <label>Description:</label><br>
-  <textarea name="description" required></textarea><br><br>
+    <div class="form-group">
+      <label>Category:</label>
+      <input type="text" name="category">
+    </div>
 
-  <label>Contact Info:</label><br>
-  <input type="text" name="contact_info"><br><br>
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea name="description" rows="4"></textarea>
+    </div>
 
-  <label>Status:</label><br>
-  <select name="status">
-    <option value="active">Active</option>
-    <option value="inactive">Inactive</option>
-  </select><br><br>
+    <div class="form-group">
+      <label>Contact Info:</label>
+      <input type="text" name="contact_info">
+    </div>
 
-  <button type="submit">Add Resource</button>
-</form>
+    <div class="form-group">
+      <label>Status:</label>
+      <select name="status">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
 
-<a href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+    <button class="submit-btn" type="submit">Add Resource</button>
+
+  </form>
+
+  <a class="back-link" href="{{ url_for('resources.list_resources') }}">Back to Resources</a>
+</div>
+
 {% endblock %}

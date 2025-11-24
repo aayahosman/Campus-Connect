@@ -227,6 +227,47 @@ body {
   background-color: #8ea8c8;
 }
 
+.flash-container {
+  max-width: 700px;
+  margin: 1rem auto;
+}
+
+.flash {
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Success (green) */
+.flash-success {
+  background-color: #e6f7ec;
+  border-left: 5px solid #34a853;
+  color: #256c3b;
+}
+
+/* Warning (yellow) */
+.flash-warning {
+  background-color: #fff9e5;
+  border-left: 5px solid #e6a700;
+  color: #735800;
+}
+
+/* Error (red) */
+.flash-error {
+  background-color: #fdeaea;
+  border-left: 5px solid #d93025;
+  color: #7a1c15;
+}
+
+/* Info (blue) */
+.flash-info {
+  background-color: #e7f2ff;
+  border-left: 5px solid #1a73e8;
+  color: #174ea6;
+}
 
 
 .card-badge-you {
@@ -242,3 +283,74 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
+.form-card {
+  max-width: 650px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.5rem;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.form-card h2 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #003366;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #f8fbff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0055aa;
+  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 1.2rem;
+  font-weight: 600;
+}
+
+.submit-btn:hover {
+  background-color: #004080;
+}
+
+/* Back link */
+.back-link {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+}
