@@ -283,3 +283,74 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
+.form-card {
+  max-width: 650px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.5rem;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.form-card h2 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #003366;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccd6e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #f8fbff;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #0055aa;
+  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 1.2rem;
+  font-weight: 600;
+}
+
+.submit-btn:hover {
+  background-color: #004080;
+}
+
+/* Back link */
+.back-link {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+}
