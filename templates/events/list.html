@@ -42,10 +42,86 @@
         <button type="submit" class="btn-sm delete">Delete</button>
       </form>
     </div>
+
+    <div class="comment-section" data-event-id="{{ e.event_id }}">
+      <button class="toggle-comments-btn" onclick="toggleComments('{{ e.event_id }}')">
+          💬 View Comments
+      </button>
+    
+      <div class="comments-area" id="comments-box-{{ e.event_id }}" style="display:none;">
+          <div class="comments-list" id="comments-event-{{ e.event_id }}"></div>
+    
+          {% if session.get('logged_in') %}
+            <textarea class="comment-input" 
+                      id="input-event-{{ e.event_id }}" 
+                      placeholder="Write a comment..."></textarea>
+            <button class="comment-post-btn" 
+                    onclick="postEventComment('{{ e.event_id }}')">Post</button>
+          {% else %}
+            <p class="comment-login-msg">Login to leave a comment.</p>
+          {% endif %}
+      </div>
+    </div>
+
   </div>
   {% else %}
   <p>No events posted yet. Add one to get started!</p>
   {% endfor %}
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".comment-section").forEach(section => {
+    const eventId = section.dataset.eventId;
+    loadEventComments(eventId);
+  });
+});
+
+function loadEventComments(eventId) {
+  fetch(`/comments/event/${eventId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById(`comments-event-${eventId}`);
+      container.innerHTML = data.map(c => `
+        <div class="comment">
+          <strong>${c.author}</strong>: ${c.content}
+          <br><span class="time">${new Date(c.created_at).toLocaleString()}</span>
+        </div>
+      `).join("");
+    });
+}
+
+function postEventComment(eventId) {
+  const input = document.getElementById(`input-event-${eventId}`);
+  const content = input.value.trim();
+  if (!content) return;
+
+  fetch("/comments", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: content,
+      event_id: Number(eventId),
+      resource_id: null
+    })
+  }).then(() => {
+    input.value = "";
+    loadEventComments(eventId);
+  });
+}
+
+function toggleComments(eventId) {
+  const box = document.getElementById(`comments-box-${eventId}`);
+  const btn = box.previousElementSibling;
+
+  if (box.style.display === "none") {
+    box.style.display = "block";
+    btn.textContent = "💬 Hide Comments";
+    loadEventComments(eventId);
+  } else {
+    box.style.display = "none";
+    btn.textContent = "💬 View Comments";
+  }
+}
+</script>
 
 {% endblock %}

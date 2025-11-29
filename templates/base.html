@@ -4,6 +4,34 @@
     <meta charset="utf-8">
     <title>{{ page_title or "Campus Connect" }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer>
+      document.addEventListener("DOMContentLoaded", () => {
+          const root = document.documentElement;
+          const button = document.getElementById("theme-toggle");
+    
+          if (!button) return; // prevents crash
+    
+          // Load saved mode
+          if (localStorage.getItem("theme") === "dark") {
+              root.classList.add("dark");
+              button.textContent = "☀️";
+          }
+    
+          button.addEventListener("click", () => {
+              root.classList.toggle("dark");
+    
+              if (root.classList.contains("dark")) {
+                  localStorage.setItem("theme", "dark");
+                  button.textContent = "☀️";
+              } else {
+                  localStorage.setItem("theme", "light");
+                  button.textContent = "🌙";
+              }
+          });
+      });
+    </script>
+    
+      
   </head>
   <body>
     <header>
@@ -16,6 +44,7 @@
         {% if session.get('logged_in') %}
           | <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% endif %}
+        <button id="theme-toggle" class="theme-btn">🌙</button>
       </nav>
     </header>
     {% with messages = get_flashed_messages(with_categories=True) %}
