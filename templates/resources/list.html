@@ -85,12 +85,22 @@ function loadComments(resourceId) {
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById(`comments-${resourceId}`);
-      container.innerHTML = data.map(c => `
-        <div class="comment">
-          <strong>${c.author}</strong>: ${c.content}
-          <br><span class="time">${new Date(c.created_at).toLocaleString()}</span>
-        </div>
-      `).join("");
+      ccontainer.innerHTML = data.map(c => `
+  <div class="comment">
+    <div class="comment-header">
+      <strong>${c.author}</strong>
+      ${c.owned ? `
+        <span class="comment-actions">
+          <button class="comment-edit" onclick="editComment(${c.comment_id}, '${c.content.replace(/'/g, "\\'")}')">Edit</button>
+          <button class="comment-delete" onclick="deleteComment(${c.comment_id}, ${c.event_id}, ${c.resource_id})">Delete</button>
+        </span>
+      ` : ""}
+    </div>
+
+    <p class="comment-content">${c.content}</p>
+    <span class="time">${new Date(c.created_at).toLocaleString()}</span>
+  </div>
+`).join("");
     });
 }
 
@@ -128,6 +138,44 @@ function toggleComments(resourceId) {
     btn.textContent = "💬 View Comments";
   }
 }
+function deleteComment(commentId, eventId, resourceId) {
+  if (!confirm("Delete this comment?")) return;
+
+  fetch(`/comments/${commentId}`, { method: "DELETE" })
+    .then(res => res.json())
+    .then(() => {
+      if (eventId) loadEventComments(eventId);
+      if (resourceId) loadResourceComments(resourceId);
+    });
+}
+
+function editComment(commentId, oldContent) {
+  const newContent = prompt("Edit your comment:", oldContent);
+  if (newContent === null) return;
+
+  fetch(`/comments/${commentId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: newContent })
+  })
+  .then(res => res.json())
+  .then(() => {
+    // reload both pages correctly
+    const eventBox = document.querySelector(`[id^="comments-event-"]`);
+    const resourceBox = document.querySelector(`[id^="comments-resource-"]`);
+
+    if (eventBox) {
+      const eventId = eventBox.id.replace("comments-event-", "");
+      loadEventComments(eventId);
+    }
+    if (resourceBox) {
+      const resourceId = resourceBox.id.replace("comments-resource-", "");
+      loadResourceComments(resourceId);
+    }
+  });
+}
+
+
 </script>
 
 {% endblock %}
