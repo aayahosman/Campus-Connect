@@ -10,22 +10,25 @@
        class="btn add-btn disabled-btn"
        title="Login required">
        + Add New Resource
-    </a>
-{% endif %}
+  </a>
+  {% endif %}
 </div>
 
 <div class="resource-grid">
   {% for r in resources %}
   <div class="resource-card">
+
     <h3>{{ r.title }}</h3>
+
     {% if r.created_by == session.get('user_id') %}
       <div class="card-badge-you">Added by you</div>
     {% endif %}
+
     <p><strong>Category:</strong> {{ r.category }}</p>
     <p>{{ r.description }}</p>
 
     {% if r.contact_info %}
-    <p><strong>Contact:</strong> {{ r.contact_info }}</p>
+      <p><strong>Contact:</strong> {{ r.contact_info }}</p>
     {% endif %}
 
     <p><strong>Status:</strong>
@@ -34,93 +37,97 @@
 
     <div class="actions">
       <a href="{{ url_for('resources.edit_resource', resource_id=r.resource_id) }}" class="btn-sm edit">Edit</a>
-      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" 
-            method="POST" class="inline-form">
+      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" method="POST" class="inline-form"></form>
         <button type="submit" class="btn-sm delete">Delete</button>
       </form>
     </div>
-    
-    <div class="comment-section" data-event-id="{{ r.resource_id }}">
+
+    <!-- COMMENTS -->
+    <div class="comment-section" data-resource-id="{{ r.resource_id }}">
       <button class="toggle-comments-btn" onclick="toggleComments('{{ r.resource_id }}')">
-          💬 View Comments
+        💬 View Comments
       </button>
-    
+
       <div class="comments-area" id="comments-box-{{ r.resource_id }}" style="display:none;">
-          <div class="comments-list" id="comments-event-{{ r.resource_id }}"></div>
-    
-          {% if session.get('logged_in') %}
-            <textarea class="comment-input" 
-                      id="input-event-{{ r.resource_id }}" 
-                      placeholder="Write a comment..."></textarea>
-            <button class="comment-post-btn" 
-                    onclick="postEventComment('{{ r.resource_id }}')">Post</button>
-          {% else %}
-            <p class="comment-login-msg">Login to leave a comment.</p>
-          {% endif %}
+
+        <div class="comments-list" id="comments-{{ r.resource_id }}"></div>
+
+        {% if session.get('logged_in') %}
+          <textarea class="comment-input" id="input-{{ r.resource_id }}" placeholder="Write a comment..."></textarea>
+          <button class="comment-post-btn" onclick="postResourceComment('{{ r.resource_id }}')">
+            Post
+          </button>
+        {% else %}
+          <p class="comment-login-msg">Login to leave a comment.</p>
+        {% endif %}
+
       </div>
     </div>
+
   </div>
   {% else %}
-  <p>No resources posted yet. Add one to get started!</p>
+    <p>No resources posted yet. Add one to get started!</p>
   {% endfor %}
 </div>
-<script>
-  function postComment(resourceId) {
-      const input = document.getElementById(`input-${resourceId}`);
-      const content = input.value.trim();
-      if (!content) return;
-  
-      fetch("/comments", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-              content: content,
-              event_id: null,
-              resource_id: resourceId
-          })
-      })
-      .then(res => res.json())
-      .then(() => {
-          input.value = "";
-          loadComments(resourceId);
-      });
-  }
-  
-  function loadComments(resourceId) {
-      fetch(`/comments/resource/${resourceId}`)
-          .then(res => res.json())
-          .then(data => {
-              const container = document.getElementById(`comments-${resourceId}`);
-              container.innerHTML = data.map(c => `
-                  <div class="comment">
-                      <strong>${c.author}</strong>: ${c.content}
-                      <br><span class="time">${new Date(c.created_at).toLocaleString()}</span>
-                  </div>
-              `).join("");
-          });
-  }
-  
-  document.addEventListener("DOMContentLoaded", () => {
-      document.querySelectorAll(".comment-section").forEach(section => {
-          const resourceId = section.dataset.resourceId;
-          loadComments(resourceId);
-      });
-  });
 
-  function toggleComments(eventId) {
-  const box = document.getElementById(`comments-box-${eventId}`);
+<script>
+/* Load comments on page load */
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".comment-section").forEach(section => {
+    const resourceId = section.dataset.resourceId;
+    loadComments(resourceId);
+  });
+});
+
+/* Fetch and show comments */
+function loadComments(resourceId) {
+  fetch(`/comments/resource/${resourceId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById(`comments-${resourceId}`);
+      container.innerHTML = data.map(c => `
+        <div class="comment">
+          <strong>${c.author}</strong>: ${c.content}
+          <br><span class="time">${new Date(c.created_at).toLocaleString()}</span>
+        </div>
+      `).join("");
+    });
+}
+
+/* Post a comment */
+function postResourceComment(resourceId) {
+  const input = document.getElementById(`input-${resourceId}`);
+  const content = input.value.trim();
+  if (!content) return;
+
+  fetch("/comments", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      content: content,
+      event_id: null,
+      resource_id: Number(resourceId)
+    })
+  }).then(() => {
+    input.value = "";
+    loadComments(resourceId);
+  });
+}
+
+/* Toggle comment box */
+function toggleComments(resourceId) {
+  const box = document.getElementById(`comments-box-${resourceId}`);
   const btn = box.previousElementSibling;
 
   if (box.style.display === "none") {
     box.style.display = "block";
     btn.textContent = "💬 Hide Comments";
-    loadEventComments(eventId);
+    loadComments(resourceId);
   } else {
     box.style.display = "none";
     btn.textContent = "💬 View Comments";
   }
 }
+</script>
 
-  </script>
-  
 {% endblock %}

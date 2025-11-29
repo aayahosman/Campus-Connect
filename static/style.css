@@ -1,7 +1,3 @@
-html, body {
-  margin: 0;
-  padding: 0;
-}
 /* THEME VARIABLES */
 :root {
   /* Light mode */
@@ -21,13 +17,6 @@ html, body {
   --link: #7abaff;
 }
 
-/* Apply globally */
-body {
-  background-color: var(--bg);
-  margin:20px; 
-  color: var(--text);
-}
-
 a { color: var(--link); }
 
 .card, .resource-card, .event-card {
@@ -36,20 +25,41 @@ a { color: var(--link); }
 }
 
 
-body {
-    font-family: sans-serif;
-    margin:20px; 
-    background-color: var(--bg);
-  }
+b/* Fixes header gap + sticky footer */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
-  header {
-    background-color: #003366;
-    color: white;
-    padding: 10px;
-    margin: 0;               
-    width: calc(100% + 40px); 
-    position: relative;
-    left: -20px;                
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: sans-serif;
+}
+
+main {
+  flex: 1;           
+  padding: 20px;     
+}
+
+/* Header */
+header {
+  width: 100%;
+  background-color: #003366;
+  color: white;
+  padding: 12px 20px;
+  box-sizing: border-box;
+}
+
+/* Footer centered always */
+footer {
+  text-align: center;
+  padding: 20px 0;
+  color: var(--text);
+  opacity: 0.8;
 }
 
   nav a {
@@ -490,7 +500,11 @@ body {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 1.2rem;
-  color: var(--text);
+  color: #003366;
+}
+
+:root.dark .about-title {
+  color: var(--link);
 }
 
 .about-text {
@@ -527,6 +541,7 @@ body {
 }
 
 
+/* Toggle button */
 .toggle-comments-btn {
   background: #003366;
   color: white;
@@ -539,6 +554,13 @@ body {
   font-weight: 600;
 }
 
+/* Dark mode override */
+:root.dark .toggle-comments-btn {
+  background: var(--link); 
+  color: #0a0a0a;
+}
+
+/* Comments container */
 .comments-area {
   margin-top: 10px;
   padding: 10px;
@@ -547,6 +569,7 @@ body {
   border-radius: 10px;
 }
 
+/* Individual comment bubble */
 .comment {
   background: var(--card);
   padding: 8px 10px;
@@ -557,10 +580,29 @@ body {
   line-height: 1.3rem;
 }
 
+/* Author name */
 .comment strong {
   color: #003366;
 }
 
+/* Dark mode name color */
+:root.dark .comment strong {
+  color: var(--link); 
+}
+
+/* Time text */
+.comment .time {
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+/* Dark mode time color */
+:root.dark .comment .time {
+  color: var(--text);
+  opacity: 0.55;
+}
+
+/* Comment input box */
 .comment-input {
   width: 100%;
   padding: 8px;
@@ -568,8 +610,18 @@ body {
   border: 1px solid var(--border);
   margin-top: 8px;
   font-size: 0.9rem;
+  background: var(--card);       
+  color: var(--text);            
 }
 
+/* Comment input dark focus */
+.comment-input:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+}
+
+/* Post button */
 .comment-post-btn {
   background: #0055aa;
   color: white;
@@ -580,4 +632,10 @@ body {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
+}
+
+/* Dark mode post button */
+:root.dark .comment-post-btn {
+  background: var(--link);
+  color: #0a0a0a;
 }
