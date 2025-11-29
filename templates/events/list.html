@@ -3,16 +3,39 @@
 <h2>Campus Events</h2>
 
 <div class="event-header">
-  {% if session.get('logged_in') %}
-  <a href="{{ url_for('event_bp.add_event') }}" class="btn">+ Add New Event</a>
-  {% else %}
-    <a href="{{ url_for('event_bp.add_event') }}" 
-       class="btn add-btn disabled-btn"
-       title="Login required">
-       + Add New Event
+  <div class="event-header-buttons">
+
+    <a href="{{ url_for('event_bp.calendar_view') }}" class="btn calendar-btn icon-btn">
+      <svg class="icon" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5C3.89 4 3 4.9 3 6v14c0 
+        1.1.89 2 2 2h14c1.1 0 2-.9 
+        2-2V6c0-1.1-.9-2-2-2zm0 
+        16H5V9h14v11zM7 11h5v5H7v-5z"/>
+      </svg>
+      Calendar View
     </a>
-{% endif %}
+
+    {% if session.get('logged_in') %}
+      <a href="{{ url_for('event_bp.add_event') }}" class="btn add-btn icon-btn">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+        </svg>
+        Add New Event
+      </a>
+    {% else %}
+      <a href="{{ url_for('event_bp.add_event') }}" 
+         class="btn add-btn disabled-btn icon-btn"
+         title="Login required">
+        <svg class="icon" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+        </svg>
+        Add New Event
+      </a>
+    {% endif %}
+
+  </div>
 </div>
+
 
 <div class="event-grid">
 
