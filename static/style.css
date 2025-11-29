@@ -789,3 +789,47 @@ footer {
   text-transform: capitalize;
   opacity: 0.8;
 }
+
+/* Status icons */
+.status-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+/* Color-coded text */
+.status-yes {
+  color: #2e7d32;
+}
+.status-no {
+  color: #c62828;
+}
+.status-maybe {
+  color: #d68900;
+}
+
+/* Dark mode */
+:root.dark .status-yes {
+  color: #66e08a;
+}
+:root.dark .status-no {
+  color: #ff8c8c;
+}
+:root.dark .status-maybe {
+  color: #ffd36a;
+}
+
+/* RSVP submitted message */
+.rsvp-flash {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flash-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+

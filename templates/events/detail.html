@@ -36,6 +36,15 @@
 
       <button type="submit" class="btn">Submit RSVP</button>
     </form>
+    {% if submitted %}
+<div class="flash flash-success rsvp-flash">
+  <svg class="flash-icon" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M7.629 13.233l-3.39-3.39L2 12.082l5.629 
+    5.63L18 7.342l-2.238-2.238z"/>
+  </svg>
+  Your RSVP has been updated!
+</div>
+{% endif %}
   </div>
 
   <!-- Attendee List -->
@@ -43,14 +52,39 @@
     <h3>Attendees</h3>
 
     {% if rsvps %}
-      <ul class="attendee-list">
-        {% for r in rsvps %}
-          <li>
-            <span class="attendee-name">{{ r.name }}</span>
-            <span class="attendee-status">{{ r.status|capitalize }}</span>
-          </li>
-        {% endfor %}
-      </ul>
+    <ul class="attendee-list">
+      {% for r in rsvps %}
+        <li>
+          <span class="attendee-name">{{ r.name }}</span>
+    
+          <span class="attendee-status status-{{ r.status }}">
+            
+            {% if r.status == 'yes' %}
+              <svg class="status-icon yes-icon" viewBox="0 0 20 20">
+                <path fill="currentColor" d="M7.629 13.233l-3.39-3.39L2 12.082l5.629 5.63L18 7.342l-2.238-2.238z"/>
+              </svg>
+              Yes
+    
+            {% elif r.status == 'no' %}
+              <svg class="status-icon no-icon" viewBox="0 0 20 20">
+                <path fill="currentColor" d="M14.348 5.652l-1-1L10 8.002 6.652 4.652l-1 1L9.002 10l-3.35 3.348 1 1L10 12.002l3.348 3.348 1-1L11.002 10z"/>
+              </svg>
+              No
+    
+            {% else %}
+              <svg class="status-icon maybe-icon" viewBox="0 0 20 20">
+                <path fill="currentColor" d="M10 2C5.589 2 2 5.589 2 10s3.589 
+                8 8 8 8-3.589 8-8-3.589-8-8-8zm1 13H9v-2h2v2zm1.071-5.071l-.829.828C10.88 
+                11.44 10.5 12 10.5 13h-2c0-1.161.54-2.161 1.299-2.922l1.3-1.299A1.5 1.5 
+                0 1 0 9.5 6.5h-2a3.5 3.5 0 1 1 5.571 2.429z"/>
+              </svg>
+              Maybe
+    
+            {% endif %}
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
     {% else %}
       <p>No RSVPs yet. Be the first!</p>
     {% endif %}
