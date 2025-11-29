@@ -639,3 +639,27 @@ footer {
   background: var(--link);
   color: #0a0a0a;
 }
+
+.comment-actions button {
+  background: #0055aa;
+  color: white;
+  border: none;
+  padding: 3px 7px;
+  margin-left: 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.comment-edit {
+  background: #1976d2;
+}
+
+.comment-delete {
+  background: #d32f2f;
+}
+
+:root.dark .comment-actions button {
+  background: var(--link);
+  color: #000;
+}
