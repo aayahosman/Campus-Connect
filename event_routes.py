@@ -320,45 +320,73 @@ def delete_event(event_id):
 
 # RSVP
 @event_bp.route('/<int:event_id>/rsvp', methods = ['POST'])
+@event_bp.route('/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp(event_id):
-    """
-    Handles the RSVP process for an event. This function checks if a user has already RSVP'd for a specific event and either updates their existing RSVP status or creates a new RSVP entry. It ensures that a valid status is provided and provides feedback to the user through flash messages. Finally, it redirects the user to the event details page after processing the RSVP.
-    """
-
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
-    user_id = session.get('user_id', 1)
+    user_id = session.get('user_id')
     created_at = datetime.datetime.now()
     status = request.form.get('status')
 
-    if not status:  # safety check
+    if not status:
         flash("Please select an RSVP option.")
         return redirect(url_for('event_bp.event_details', event_id=event_id))
 
-    # Check if the user already RSVPed
-    curs.execute('SELECT * FROM rsvp WHERE event_id=%s AND created_by=%s', (event_id, user_id))
+    # Check if existing RSVP
+    curs.execute(
+        'SELECT * FROM rsvp WHERE event_id=%s AND created_by=%s',
+        (event_id, user_id)
+    )
     existing = curs.fetchone()
 
     if existing:
-        # Update the existing RSVP
         curs.execute('''
             UPDATE rsvp
             SET status=%s, created_at=%s
             WHERE event_id=%s AND created_by=%s
         ''', (status, created_at, event_id, user_id))
-        flash("Your RSVP has been updated.")
+        message = "Your RSVP has been updated!"
     else:
-        # Insert new RSVP
         curs.execute('''
             INSERT INTO rsvp(event_id, created_by, status, created_at)
             VALUES (%s, %s, %s, %s)
         ''', (event_id, user_id, status, created_at))
-        flash("Your RSVP has been recorded.")
+        message = "Your RSVP has been recorded!"
 
     conn.commit()
-    return redirect(url_for('event_bp.event_details', event_id = event_id))
+
+    # Reload event + RSVPS so we can show SVG icons + success box
+    curs.execute('SELECT * FROM events WHERE event_id=%s', (event_id,))
+    event = curs.fetchone()
+
+    curs.execute('''
+        SELECT rsvp.status, rsvp.created_at, users.full_name AS name
+        FROM rsvp
+        JOIN users ON rsvp.created_by = users.user_id
+        WHERE rsvp.event_id=%s
+        ORDER BY
+            CASE rsvp.status WHEN 'yes' THEN 1 WHEN 'maybe' THEN 2 ELSE 3 END,
+            created_at ASC
+    ''', (event_id,))
+    rsvps = curs.fetchall()
+
+    curs.execute('''
+        SELECT status
+        FROM rsvp
+        WHERE event_id=%s AND created_by=%s
+    ''', (event_id, user_id))
+    user_rsvp = curs.fetchone()
+
+    # render detail.html WITH the "submitted" flag
+    return render_template(
+        'events/detail.html',
+        event=event,
+        rsvps=rsvps,
+        user_rsvp=user_rsvp,
+        submitted=message  # pass the text instead of True
+    )
 
 @event_bp.route("/calendar")
 def calendar_view():
