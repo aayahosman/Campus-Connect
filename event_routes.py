@@ -14,6 +14,15 @@ def getConn():
 
 @event_bp.route('/')
 def list_events():
+    """
+    List all events from the database and render them in a template.
+    This function establishes a connection to the database, retrieves all events
+    ordered by their creation date in descending order, and then renders the 
+    events in the specified HTML template.
+    Returns:
+        Rendered HTML template containing the list of events.
+    """
+
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
@@ -70,6 +79,18 @@ def list_events():
 @event_bp.route('/add', methods = ['GET', 'POST'])
 @login_required
 def add_event():
+    """
+    Adds a new event to the database.
+    This function handles the HTTP POST request to create a new event.
+    It retrieves event details from the form data, checks if the user is logged in,
+    and inserts the event information into the 'events' table in the database.
+    Returns:
+        Redirects to the event listing page upon successful creation of the event.
+        If the user is not logged in, it redirects to the authentication index page.
+    Raises:
+        Flash messages for user feedback on success or failure conditions.
+    """
+
     conn = getConn()
     curs = conn.cursor()
     if request.method == 'POST':
@@ -122,6 +143,17 @@ def add_event():
 # Shows event full details & RSVP
 @event_bp.route('/<int:event_id>')
 def event_details(event_id):
+    """
+    Fetches the details of a specific event, including its information, 
+    the RSVP statuses of attendees, and the current user's RSVP status. 
+    If the event is not found, it redirects to the list of events. 
+    Parameters:
+        event_id (int): The unique identifier of the event.
+    Returns:
+        Rendered HTML template with event details, RSVP information, 
+        and the user's RSVP status.
+    """
+
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
@@ -172,6 +204,18 @@ def event_details(event_id):
 @event_bp.route('/edit/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def edit_event(event_id):
+    """
+    Edit an existing event in the database.
+    This function retrieves an event by its ID, checks if the user has ownership of the event,
+    and allows the user to update the event's details such as title, date, category, description,
+    contact information, and address. If the event is not found or the user does not have permission
+    to edit it, appropriate warnings are flashed, and the user is redirected to the event list.
+    Parameters:
+        event_id (int): The unique identifier of the event to be edited.
+    Returns:
+        Redirects to the event list page after successful update or displays an edit form for the event.
+    """
+
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
@@ -236,6 +280,17 @@ def edit_event(event_id):
 @event_bp.route('/delete/<int:event_id>', methods=['POST'])
 @login_required
 def delete_event(event_id):
+    """
+    Deletes an event and its associated RSVPs from the database.
+    This function first checks if the event exists and if the user attempting to delete it is the owner. 
+    If the event is found and the ownership is verified, it deletes all RSVPs associated with the event 
+    before finally removing the event itself from the database. 
+    Parameters:
+        event_id (int): The unique identifier of the event to be deleted.
+    Returns:
+        Redirects to the event listing page with a flash message indicating the result of the operation.
+    """
+
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
@@ -267,6 +322,10 @@ def delete_event(event_id):
 @event_bp.route('/<int:event_id>/rsvp', methods = ['POST'])
 @login_required
 def rsvp(event_id):
+    """
+    Handles the RSVP process for an event. This function checks if a user has already RSVP'd for a specific event and either updates their existing RSVP status or creates a new RSVP entry. It ensures that a valid status is provided and provides feedback to the user through flash messages. Finally, it redirects the user to the event details page after processing the RSVP.
+    """
+
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
