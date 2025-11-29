@@ -11,15 +11,60 @@ def getConn():
     return connect()
 
 # Read events
+
 @event_bp.route('/')
 def list_events():
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
-    curs.execute('''
-        select * from events ORDER BY created_at DESC
-        ''')
+
+    # read search term query string
+    q = request.args.get('q', '').strip()
+    # get category from args
+    category = request.args.get('category', '')
+
+    # base SQL that will be edited later, 1=1 to allow adding on AND's later
+    sql = '''
+        SELECT *
+        FROM events
+        WHERE 1=1
+    '''
+    params = []
+
+    # keyword search over title + description
+    if q:
+        sql += ' AND (title LIKE %s OR description LIKE %s)'
+        like = f"%{q}%"
+        params.extend([like, like])
+
+    # category filter if the user decides to add a category aswell 
+    if category:
+        sql += ' AND category = %s'
+        
+        params.append(category)
+
+    # sort newest first (or by date_of_event if you prefer)
+    sql += ' ORDER BY created_at DESC'
+
+    curs.execute(sql, params)
     events = curs.fetchall()
-    return render_template('events/list.html', events=events)
+
+    # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
+    curs.execute('''
+        SELECT DISTINCT category
+        FROM events
+        WHERE category IS NOT NULL AND category <> ''
+        ORDER BY category
+    ''')
+    cat_rows = curs.fetchall()
+    categories = [row['category'] for row in cat_rows]
+
+    return render_template(
+        'events/list.html',
+        events=events,
+        q=q,
+        categories=categories,
+        selected_category=category,
+    )
 
 # Add events
 @event_bp.route('/add', methods = ['GET', 'POST'])

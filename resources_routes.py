@@ -13,9 +13,54 @@ def getConn():
 def list_resources():
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
-    curs.execute('SELECT * FROM resources ORDER BY created_at DESC')
+
+    # search term and selected category from query string
+    q = request.args.get('q', '').strip()
+    #get the categories from the user
+    category = request.args.get('category', '')
+
+    # base SQL that will be edited later, 1=1 to allow adding on AND's later
+    sql = '''
+        SELECT *
+        FROM resources
+        WHERE 1=1
+    '''
+    params = []
+
+    # keyword search
+    if q:
+        sql += ' AND (title LIKE %s OR description LIKE %s OR category LIKE %s)'
+        like = f"%{q}%"
+        params.extend([like, like, like])
+
+    # category filter if the user decides to add a category aswell 
+    if category:
+        sql += ' AND category = %s'
+        params.append(category)
+
+    sql += ' ORDER BY created_at DESC'
+
+    curs.execute(sql, params)
     resources = curs.fetchall()
-    return render_template('resources/list.html', resources=resources)
+
+    # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
+    curs.execute('''
+        SELECT DISTINCT category
+        FROM resources
+        WHERE category IS NOT NULL AND category <> ''
+        ORDER BY category
+    ''')
+    cat_rows = curs.fetchall()
+    categories = [row['category'] for row in cat_rows]
+
+    return render_template(
+        'resources/list.html',
+        resources=resources,
+        q=q,
+        categories=categories,
+        selected_category=category,
+    )
+
 
 # ---- Create ----
 @resource_bp.route('/add', methods=['GET', 'POST'])
