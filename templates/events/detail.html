@@ -1,41 +1,63 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>{{ event.title }}</h2>
 
-<p><strong>Date & Time:</strong> {{ event.date_of_event }}</p>
-<p>{{ event.description }}</p>
+<div class="rsvp-wrapper">
 
+  <!-- Event Title -->
+  <h2 class="rsvp-title">{{ event.title }}</h2>
 
-{% if event.address1 %}
-<p><strong>Location:</strong> {{ event.address1 }} {% if event.address2 %}, {{ event.address2 }}{% endif %}, {{ event.city }}, {{ event.state }} {{ event.postal_code }}</p>
-{% endif %}
+  <!-- Event Details Card -->
+  <div class="rsvp-card">
+    <p><strong>Date & Time:</strong> {{ event.date_of_event }}</p>
+    <p><strong>Description:</strong> {{ event.description }}</p>
 
-<p><strong>Status:</strong> {{ event.status }}</p>
+    {% if event.address1 %}
+    <p><strong>Location:</strong> 
+      {{ event.address1 }}{% if event.address2 %}, {{ event.address2 }}{% endif %}, 
+      {{ event.city }}, {{ event.state }} {{ event.postal_code }}
+    </p>
+    {% endif %}
 
-<hr>
+    <p><strong>Event Status:</strong> {{ event.status }}</p>
+  </div>
 
-<h3>RSVP</h3>
-<form action="{{ url_for('event_bp.rsvp', event_id=event.event_id) }}" method="POST">
-  <label for="status">RSVP:</label>
-  <select name="status" id="status">
-    <option value="yes" {% if user_rsvp and user_rsvp.status == 'yes' %}selected{% endif %}>Yes</option>
-    <option value="no" {% if user_rsvp and user_rsvp.status == 'no' %}selected{% endif %}>No</option>
-    <option value="maybe" {% if user_rsvp and user_rsvp.status == 'maybe' %}selected{% endif %}>Maybe</option>
-  </select>
-  <button type="submit" class="btn-sm">Submit</button>
-</form>
-<hr>
+  <!-- RSVP Section -->
+  <div class="rsvp-card">
+    <h3>RSVP</h3>
 
-<h3>Attendees</h3>
-{% if rsvps %}
-  <ul>
-    {% for r in rsvps %}
-      <li>{{ r.name }} — Status: {{ r.status }}</li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>No one has RSVP’d yet. Be the first!</p>
-{% endif %}
+    <form action="{{ url_for('event_bp.rsvp', event_id=event.event_id) }}" method="POST" class="rsvp-form">
 
-<a href="{{ url_for('event_bp.list_events') }}">Back to Events</a>
+      <label for="status">Your response:</label>
+      <select name="status" id="status">
+        <option value="yes" {% if user_rsvp and user_rsvp.status == 'yes' %}selected{% endif %}>Yes</option>
+        <option value="no" {% if user_rsvp and user_rsvp.status == 'no' %}selected{% endif %}>No</option>
+        <option value="maybe" {% if user_rsvp and user_rsvp.status == 'maybe' %}selected{% endif %}>Maybe</option>
+      </select>
+
+      <button type="submit" class="btn">Submit RSVP</button>
+    </form>
+  </div>
+
+  <!-- Attendee List -->
+  <div class="rsvp-card">
+    <h3>Attendees</h3>
+
+    {% if rsvps %}
+      <ul class="attendee-list">
+        {% for r in rsvps %}
+          <li>
+            <span class="attendee-name">{{ r.name }}</span>
+            <span class="attendee-status">{{ r.status|capitalize }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No RSVPs yet. Be the first!</p>
+    {% endif %}
+  </div>
+
+  <a href="{{ url_for('event_bp.list_events') }}" class="back-link">&larr; Back to Events</a>
+
+</div>
+
 {% endblock %}

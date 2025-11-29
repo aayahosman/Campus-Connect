@@ -663,3 +663,129 @@ footer {
   background: var(--link);
   color: #000;
 }
+
+.event-header-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Calendar View button */
+.calendar-btn {
+  background: var(--card);
+  color: #003366;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+.calendar-btn:hover {
+  background: var(--border);
+  color: #00264d;
+}
+
+/* DARK MODE */
+:root.dark .calendar-btn {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--link);
+}
+
+:root.dark .calendar-btn:hover {
+  background: var(--border);
+  color: #fff;
+}
+
+/* Icons inside header buttons */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;     /* space between icon + text */
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor; /* adapts to dark mode automatically */
+}
+
+/* RSVP PAGE */
+
+.rsvp-wrapper {
+  max-width: 750px;
+  margin: 2rem auto;
+}
+
+.rsvp-title {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 1.5rem;
+}
+
+:root.dark .rsvp-title {
+  color: var(--link);
+}
+
+.rsvp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.4rem 1.6rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  margin-bottom: 1.5rem;
+}
+
+.rsvp-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+:root.dark .rsvp-card h3 {
+  color: var(--link);
+}
+
+.rsvp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.rsvp-form select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.rsvp-form select:focus {
+  border-color: var(--link);
+  outline: none;
+  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+}
+
+/* Attendee list */
+.attendee-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.attendee-list li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0;
+}
+
+.attendee-name {
+  font-weight: 600;
+}
+
+.attendee-status {
+  text-transform: capitalize;
+  opacity: 0.8;
+}

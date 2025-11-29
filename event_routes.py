@@ -359,3 +359,7 @@ def rsvp(event_id):
 
     conn.commit()
     return redirect(url_for('event_bp.event_details', event_id = event_id))
+
+@event_bp.route("/calendar")
+def calendar_view():
+    return render_template("calendar_view.html")
