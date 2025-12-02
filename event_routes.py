@@ -29,7 +29,7 @@ def add_event():
     curs = conn.cursor()
     if request.method == 'POST':
         title = request.form['title']
-        date_of_event = request.form['date_of_event'] 
+        date_of_event = request.form['date_of_event']
         category = request.form['category']
         description = request.form['description']
         contact_info = request.form.get('contact_info')
@@ -40,7 +40,7 @@ def add_event():
         state = request.form.get('state')
         postal_code = request.form.get('postal_code')
 
-            
+
         created_by = session.get('user_id')
         if created_by is None:
             flash("You must be logged in to create events.", "warning")
