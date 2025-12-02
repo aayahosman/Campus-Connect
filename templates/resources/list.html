@@ -20,10 +20,28 @@
 
     <h3>{{ r.title }}</h3>
 
+    {% if r.status == 'active' %}
+    <span class="verified">✔ Verified by community</span>
+    {% elif r.status == 'flagged' %}
+        <span class="flagged">⚠ Needs review</span>
+    {% else %}
+        <span class="removed"> Removed</span>
+    {% endif %}
+
+    <div class="vote-box">
+      <button class="vote-btn" onclick="vote('event','{{ e.event_id }}', 'up')">⬆</button>
+      <span>{{ r.upvotes }}</span>
+  
+      <button class="vote-btn" onclick="vote('event','{{ e.event_id }}', 'down')">⬇</button>
+      <span>{{ r.downvotes }}</span>
+  </div>
+  
+
     {% if r.created_by == session.get('user_id') %}
       <div class="card-badge-you">Added by you</div>
     {% endif %}
 
+    {% if r.status != 'removed' %}
     <p><strong>Category:</strong> {{ r.category }}</p>
     <p>{{ r.description }}</p>
 
@@ -63,6 +81,7 @@
 
       </div>
     </div>
+    {% endif %}
 
   </div>
   {% else %}
@@ -175,6 +194,14 @@ function editComment(commentId, oldContent) {
   });
 }
 
+async function vote(type, id, vote) {
+    let res = await fetch(`/votes/${type}/${id}`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote })
+    });
+    location.reload(); // refresh to show updated votes
+}
 
 </script>
 

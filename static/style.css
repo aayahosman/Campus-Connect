@@ -833,3 +833,7 @@ footer {
   fill: currentColor;
 }
 
+
+.verified { color: green; font-weight: bold; }
+.flagged { color: orange; font-weight: bold; }
+.removed { color: red; font-weight: bold; }
