@@ -40,33 +40,13 @@
   {% for r in resources %}
   <div class="resource-card">
 
-    <h3>{{ r.title }}</h3>
-
-    {% if r.upvotes >= 25 %}
-    <span class="verified">✔ Verified by community</span>
-  {% elif r.status == 'flagged' %}
-      <span class="flagged">⚠ Needs review</span>
-  {% elif r.status == 'removed' %}
-      <span class="removed">Removed</span>
-  {% else %}
-      <span class="unverified">Pending verification</span>
-  {% endif %}
-
-
-    <div class="vote-box">
-      <button class="vote-btn" onclick="vote('resource', '{{ r.resource_id }}', 'up')">⬆</button>
-      <span>{{ r.upvotes }}</span>
-  
-      <button class="vote-btn" onclick="vote('resource', '{{ r.resource_id }}', 'down')">⬇</button>
-      <span>{{ r.downvotes }}</span>
-  </div>
-  
-
     {% if r.created_by == session.get('user_id') %}
       <div class="card-badge-you">Added by you</div>
     {% endif %}
 
-    {% if r.status != 'removed' %}
+    <h3>{{ r.title }}</h3>
+
+    <!-- ALWAYS show content -->
     <p><strong>Category:</strong> {{ r.category }}</p>
     <p>{{ r.description }}</p>
 
@@ -80,9 +60,33 @@
 
     <div class="actions">
       <a href="{{ url_for('resources.edit_resource', resource_id=r.resource_id) }}" class="btn-sm edit">Edit</a>
-      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" method="POST" class="inline-form"></form>
+
+      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" 
+            method="POST" class="inline-form">
         <button type="submit" class="btn-sm delete">Delete</button>
       </form>
+    </div>
+
+    <!-- NOW put verification + votes at the BOTTOM (matches events) -->
+    <div class="verification-box">
+
+      {% if r.upvotes >= 25 %}
+        <span class="verified">✔ Verified by community</span>
+      {% elif r.status == 'flagged' %}
+        <span class="flagged">⚠ Needs review</span>
+      {% elif r.status == 'removed' %}
+        <span class="removed">✖ Removed</span>
+      {% else %}
+        <span class="unverified">⧗ Pending verification</span>
+      {% endif %}
+
+      <div class="vote-box">
+        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','up')">⬆</button>
+        <span>{{ r.upvotes }}</span>
+
+        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','down')">⬇</button>
+        <span>{{ r.downvotes }}</span>
+      </div>
     </div>
 
     <!-- COMMENTS -->
@@ -92,23 +96,19 @@
       </button>
 
       <div class="comments-area" id="comments-box-{{ r.resource_id }}" style="display:none;">
-
         <div class="comments-list" id="comments-{{ r.resource_id }}"></div>
 
         {% if session.get('logged_in') %}
           <textarea class="comment-input" id="input-{{ r.resource_id }}" placeholder="Write a comment..."></textarea>
-          <button class="comment-post-btn" onclick="postResourceComment('{{ r.resource_id }}')">
-            Post
-          </button>
+          <button class="comment-post-btn" onclick="postResourceComment('{{ r.resource_id }}')">Post</button>
         {% else %}
           <p class="comment-login-msg">Login to leave a comment.</p>
         {% endif %}
-
       </div>
     </div>
-    {% endif %}
 
-  </div>
+</div>
+
   {% else %}
     <p>No resources posted yet. Add one to get started!</p>
   {% endfor %}

@@ -1,6 +1,4 @@
-
 -- USERS
-
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
     full_name VARCHAR(80) NOT NULL,
@@ -9,9 +7,7 @@ CREATE TABLE users (
     role ENUM('student','admin') DEFAULT NULL
 );
 
-
 -- EVENTS
-
 CREATE TABLE events (
     event_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(140),
@@ -32,10 +28,7 @@ CREATE TABLE events (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
-
-
 -- RESOURCES
-
 CREATE TABLE resources (
     resource_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(140),
@@ -55,9 +48,7 @@ CREATE TABLE resources (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
-
 -- COMMENTS
-
 CREATE TABLE comments (
     comment_id INT PRIMARY KEY AUTO_INCREMENT,
     content TEXT NOT NULL,
@@ -70,9 +61,7 @@ CREATE TABLE comments (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
-
 -- RSVP
-
 CREATE TABLE rsvp (
     rsvp_id INT PRIMARY KEY AUTO_INCREMENT,
     status ENUM('yes','no','maybe'),
@@ -83,9 +72,7 @@ CREATE TABLE rsvp (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
-
--- VOTES (upvote/downvote system)
-
+-- VOTES
 CREATE TABLE votes (
     vote_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -94,4 +81,22 @@ CREATE TABLE votes (
     vote ENUM('up','down') NOT NULL,
     UNIQUE (user_id, item_type, item_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- SERVICES
+CREATE TABLE IF NOT EXISTS services (
+    service_id INT PRIMARY KEY AUTO_INCREMENT,
+    service_name VARCHAR(140) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(100),
+
+    price_range VARCHAR(50),
+    service_location_type ENUM('on-campus','off-campus','mobile','dorm') DEFAULT 'on-campus',
+    availability VARCHAR(120),
+    contact_method VARCHAR(200),
+
+    created_by INT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
