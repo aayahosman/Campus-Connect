@@ -36,7 +36,6 @@
   </div>
 </div>
 
-
 <form method="get" class="search-filter" style="margin-bottom: 1rem;">
   <input
     type="text"
@@ -70,6 +69,29 @@
 
     
     <h3>{{ e.title }}</h3>
+    
+    {% if e.upvotes >= 25 %}
+    <span class="verified">✔ Verified by community</span>
+    {% elif e.status == 'flagged' %}
+        <span class="flagged">⚠ Needs review</span>
+    {% elif e.status == 'removed' %}
+        <span class="removed">Removed</span>
+    {% else %}
+        <span class="unverified">Pending verification</span>
+    {% endif %}
+
+
+    <div class="vote-box">
+      <button class="vote-btn" onclick="vote('event','{{ e.event_id }}', 'up')">⬆</button>
+      <span>{{ e.upvotes }}</span>
+  
+      <button class="vote-btn" onclick="vote('event','{{ e.event_id }}', 'down')">⬇</button>
+      <span>{{ e.downvotes }}</span>
+  </div>
+  
+
+    {% if e.status != 'removed' %}
+
     <p><strong>Date & Time:</strong> {{ e.date_of_event }}</p>
     <p><strong>Description: </strong> {{ e.description }}</p>
     <p><strong>Contact Info: </strong> {{ e.contact_info if e.contact_info else "No contact info provided." }}</p>
@@ -107,6 +129,8 @@
           {% endif %}
       </div>
     </div>
+
+    {% endif %}
 
   </div>
   {% else %}
@@ -212,6 +236,28 @@ function editComment(commentId, oldContent) {
       loadResourceComments(resourceId);
     }
   });
+}
+
+async function vote(type, id, voteType) {
+    let res = await fetch(`/votes/${type}/${id}`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote: voteType })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 403) {
+        alert("You must be logged in to vote.");
+        return;
+    }
+
+    if (data.message === "already voted") {
+        alert("You already cast this vote.");
+        return;
+    }
+
+    location.reload();
 }
 
 </script>

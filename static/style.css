@@ -833,3 +833,19 @@ footer {
   fill: currentColor;
 }
 
+
+.verified { color: green; font-weight: bold; }
+.flagged { color: orange; font-weight: bold; }
+.removed { color: red; font-weight: bold; }
+
+.unverified {
+  color: #555;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+:root.dark .unverified {
+  color: var(--text);
+  opacity: 0.6;
+}
+

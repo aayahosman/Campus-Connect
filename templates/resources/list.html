@@ -13,6 +13,7 @@
   </a>
   {% endif %}
 </div>
+
 <form method="get" class="search-filter" style="margin-bottom: 1rem;">
   <input
     type="text"
@@ -34,16 +35,38 @@
   <button type="submit" class="btn">Search</button>
 </form>
 
+
 <div class="resource-grid">
   {% for r in resources %}
   <div class="resource-card">
 
     <h3>{{ r.title }}</h3>
 
+    {% if r.upvotes >= 25 %}
+    <span class="verified">✔ Verified by community</span>
+  {% elif r.status == 'flagged' %}
+      <span class="flagged">⚠ Needs review</span>
+  {% elif r.status == 'removed' %}
+      <span class="removed">Removed</span>
+  {% else %}
+      <span class="unverified">Pending verification</span>
+  {% endif %}
+
+
+    <div class="vote-box">
+      <button class="vote-btn" onclick="vote('resource', '{{ r.resource_id }}', 'up')">⬆</button>
+      <span>{{ r.upvotes }}</span>
+  
+      <button class="vote-btn" onclick="vote('resource', '{{ r.resource_id }}', 'down')">⬇</button>
+      <span>{{ r.downvotes }}</span>
+  </div>
+  
+
     {% if r.created_by == session.get('user_id') %}
       <div class="card-badge-you">Added by you</div>
     {% endif %}
 
+    {% if r.status != 'removed' %}
     <p><strong>Category:</strong> {{ r.category }}</p>
     <p>{{ r.description }}</p>
 
@@ -83,6 +106,7 @@
 
       </div>
     </div>
+    {% endif %}
 
   </div>
   {% else %}
@@ -105,7 +129,7 @@ function loadComments(resourceId) {
     .then(res => res.json())
     .then(data => {
       const container = document.getElementById(`comments-${resourceId}`);
-      ccontainer.innerHTML = data.map(c => `
+      container.innerHTML = data.map(c => `
   <div class="comment">
     <div class="comment-header">
       <strong>${c.author}</strong>
@@ -195,6 +219,27 @@ function editComment(commentId, oldContent) {
   });
 }
 
+async function vote(type, id, voteType) {
+    let res = await fetch(`/votes/${type}/${id}`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vote: voteType })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 403) {
+        alert("You must be logged in to vote.");
+        return;
+    }
+
+    if (data.message === "already voted") {
+        alert("You already cast this vote.");
+        return;
+    }
+
+    location.reload();
+}
 
 </script>
 

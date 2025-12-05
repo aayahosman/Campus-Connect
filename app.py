@@ -6,6 +6,7 @@ import cs304dbi as dbi
 from resources_routes import resource_bp
 from event_routes import event_bp
 from comment_routes import comment_routes
+from vote_routes import votes_bp
 
 
 app = Flask(__name__)
@@ -19,6 +20,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(resource_bp)
 app.register_blueprint(event_bp)
 app.register_blueprint(comment_routes)
+app.register_blueprint(votes_bp)
 
 
 @app.route('/')
