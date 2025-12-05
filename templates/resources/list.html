@@ -13,26 +13,6 @@
   </a>
   {% endif %}
 </div>
-<form method="get" class="search-filter" style="margin-bottom: 1rem;">
-  <input
-    type="text"
-    name="q"
-    placeholder="Search resources..."
-    value="{{ q or '' }}"
-  >
-
-  <select name="category">
-    <option value="">All categories</option>
-    {% for c in categories %}
-      <option value="{{ c }}"
-        {% if selected_category == c %}selected{% endif %}>
-        {{ c }}
-      </option>
-    {% endfor %}
-  </select>
-
-  <button type="submit" class="btn">Search</button>
-</form>
 
 <form method="get" class="search-filter" style="margin-bottom: 1rem;">
   <input
@@ -62,13 +42,16 @@
 
     <h3>{{ r.title }}</h3>
 
-    {% if r.status == 'active' %}
+    {% if r.upvotes >= 25 %}
     <span class="verified">✔ Verified by community</span>
-    {% elif r.status == 'flagged' %}
-        <span class="flagged">⚠ Needs review</span>
-    {% else %}
-        <span class="removed"> Removed</span>
-    {% endif %}
+  {% elif r.status == 'flagged' %}
+      <span class="flagged">⚠ Needs review</span>
+  {% elif r.status == 'removed' %}
+      <span class="removed">Removed</span>
+  {% else %}
+      <span class="unverified">Pending verification</span>
+  {% endif %}
+
 
     <div class="vote-box">
       <button class="vote-btn" onclick="vote('resource', '{{ r.resource_id }}', 'up')">⬆</button>
@@ -244,9 +227,18 @@ async function vote(type, id, voteType) {
     });
 
     const data = await res.json();
-    console.log(data);
 
-    location.reload(); // refresh to show updated votes
+    if (res.status === 403) {
+        alert("You must be logged in to vote.");
+        return;
+    }
+
+    if (data.message === "already voted") {
+        alert("You already cast this vote.");
+        return;
+    }
+
+    location.reload();
 }
 
 </script>

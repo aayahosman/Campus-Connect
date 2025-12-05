@@ -3,6 +3,8 @@ from cs304dbi import connect
 import cs304dbi as dbi
 import datetime
 from auth_utils import login_required
+from flask import jsonify
+
 dbi.conf('cs304jas_db')
 
 event_bp = Blueprint('event_bp', __name__, url_prefix='/events')
@@ -391,3 +393,27 @@ def rsvp(event_id):
 @event_bp.route("/calendar")
 def calendar_view():
     return render_template("calendar_view.html")
+
+@event_bp.route('/api/events')
+def events_json():
+    conn = getConn()
+    curs = conn.cursor(dbi.dictCursor)
+
+    curs.execute('''
+        SELECT event_id, title, date_of_event, description
+        FROM events
+        ORDER BY date_of_event ASC
+    ''')
+    records = curs.fetchall()
+
+    events = []
+    for r in records:
+        # FullCalendar needs {"title": "...", "start": "..."}
+        events.append({
+            "id": r["event_id"],
+            "title": r["title"],
+            "start": r["date_of_event"].isoformat(),
+            "description": r["description"]
+        })
+
+    return jsonify(events)

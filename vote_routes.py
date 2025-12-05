@@ -65,18 +65,19 @@ def vote(item_type, item_id):
         ''', (user_id, item_type, item_id, vote_type))
 
     # Update counts
-    if vote_type == "up":
-        curs.execute(f'''
-            UPDATE {table}
-            SET upvotes = upvotes + 1
-            WHERE {id_col} = %s
-        ''', [item_id])
+    if previous:
+        # If switching votes, reverse the old one
+        if previous['vote'] == 'up' and vote_type == 'down':
+            curs.execute(f"UPDATE {table} SET upvotes = upvotes - 1, downvotes = downvotes + 1 WHERE {id_col}=%s", [item_id])
+        elif previous['vote'] == 'down' and vote_type == 'up':
+            curs.execute(f"UPDATE {table} SET downvotes = downvotes - 1, upvotes = upvotes + 1 WHERE {id_col}=%s", [item_id])
     else:
-        curs.execute(f'''
-            UPDATE {table}
-            SET downvotes = downvotes + 1
-            WHERE {id_col} = %s
-        ''', [item_id])
+        # First ever vote
+        if vote_type == "up":
+            curs.execute(f"UPDATE {table} SET upvotes = upvotes + 1 WHERE {id_col}=%s", [item_id])
+        else:
+            curs.execute(f"UPDATE {table} SET downvotes = downvotes + 1 WHERE {id_col}=%s", [item_id])
+
 
     # After update → check thresholds
     curs.execute(f'''
