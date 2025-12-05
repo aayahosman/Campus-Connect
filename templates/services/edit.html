@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-card">
+  <h2>Edit Service</h2>
+
+  <form action="{{ url_for('services.edit_service', service_id=service.service_id) }}" method="POST">
+
+    <div class="form-group">
+      <label>Service Name:</label>
+      <input type="text" name="service_name" value="{{ service.service_name }}" required>
+    </div>
+
+    <div class="form-group">
+      <label>Category:</label>
+      <input type="text" name="category" value="{{ service.category }}">
+    </div>
+
+    <div class="form-group">
+      <label>Price Range:</label>
+      <input type="text" name="price_range" value="{{ service.price_range }}">
+    </div>
+
+    <div class="form-group">
+      <label>Location Type:</label>
+      <select name="service_location_type">
+        <option value="on-campus" {% if service.service_location_type == 'on-campus' %}selected{% endif %}>On Campus</option>
+        <option value="off-campus" {% if service.service_location_type == 'off-campus' %}selected{% endif %}>Off Campus</option>
+        <option value="mobile" {% if service.service_location_type == 'mobile' %}selected{% endif %}>Mobile</option>
+        <option value="dorm" {% if service.service_location_type == 'dorm' %}selected{% endif %}>Dorm</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Availability:</label>
+      <input type="text" name="availability" value="{{ service.availability }}">
+    </div>
+
+    <div class="form-group">
+      <label>Contact Method:</label>
+      <input type="text" name="contact_method" value="{{ service.contact_method }}">
+    </div>
+
+    <div class="form-group">
+      <label>Description:</label>
+      <textarea name="description" rows="4">{{ service.description }}</textarea>
+    </div>
+
+    <button class="submit-btn" type="submit">Save Changes</button>
+
+  </form>
+
+  <a class="back-link" href="{{ url_for('services.list_services') }}">Back to Services</a>
+</div>
+{% endblock %}
