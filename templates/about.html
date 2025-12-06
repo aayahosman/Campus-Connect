@@ -1,30 +1,150 @@
 {% extends "base.html" %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+<h2 class="about-title">About Campus-Connect</h2>
 
 <div class="about-wrapper">
-    <h1 class="about-title">About Campus Connect</h1>
 
+  <p class="about-text">
+    Campus-Connect is a student-built community platform designed to centralize 
+    campus resources, events, and civic engagement opportunities. Instead of searching 
+    across multiple websites, emails, and group chats, students can use this single hub 
+    to discover free resources, browse campus events, and connect with their community.
+  </p>
+
+  <h3>What You Can Do on Campus-Connect</h3>
+  <ul class="about-text">
+    <li>Find or share free community resources (food support, housing, technology, etc.)</li>
+    <li>Create, browse, and RSVP to campus and civic events</li>
+    <li>Comment on posts and join conversations</li>
+    <li>Verify helpful posts with upvotes</li>
+  </ul>
+
+  <hr>
+
+  <h3>Getting Started</h3>
+  <p class="about-text">You can browse all resources and events without an account.  
+  To contribute or interact, you must log in.</p>
+
+  <h4>Creating an Account</h4>
+  <ul class="about-text">
+    <li>Go to <strong>Sign Up</strong></li>
+    <li>Enter your name, email, password, and select your role</li>
+    <li>Once registered, you will be redirected to your welcome page</li>
+  </ul>
+
+  <h4>Logging In</h4>
+  <ul class="about-text">
+    <li>Enter your email and password on the Login page</li>
+    <li>If your credentials are correct, you’ll be logged in and redirected</li>
+    <li>If not, you’ll be asked to try again</li>
+  </ul>
+
+  <hr>
+
+  <h3>Using Resources</h3>
+  <p class="about-text">
+    The Resources page lists all student-submitted community support options such as 
+    food assistance, technology help, housing support, professional development, and more.
+  </p>
+
+  <h4>Adding a Resource</h4>
+  <ul class="about-text">
+    <li>Select <strong>Add New Resource</strong></li>
+    <li>Fill in the required fields (title, category, description, status, etc.)</li>
+    <li>Click "Add Resource" to publish your resource</li>
+  </ul>
+
+  <h4>Editing or Deleting Resources</h4>
+  <ul class="about-text">
+    <li>You may only edit or delete resources that <strong>you</strong> created</li>
+    <li>Use the “Edit” button to update, or the “Delete” button to remove</li>
+  </ul>
+
+  <hr>
+
+  <h3>Using Events</h3>
+  <p class="about-text">
+    Events include workshops, campus gatherings, civic engagement opportunities, and more.
+    You can browse, filter by category, and RSVP to events.
+  </p>
+
+  <h4>Adding an Event</h4>
+  <ul class="about-text">
+    <li>Select <strong>Add New Event</strong></li>
+    <li>Enter event details such as time, location, category, and description</li>
+    <li>Click "Add Event" to publish it to the Events page</li>
+  </ul>
+
+  <h4>RSVP to an Event</h4>
+  <ul class="about-text">
+    <li>Click <strong>View</strong> on any event</li>
+    <li>Select <strong>Yes</strong> or <strong>Maybe</strong> from the RSVP menu</li>
+    <li>See who else is attending</li>
+  </ul>
+
+  <h4>Editing or Deleting Events</h4>
+  <ul class="about-text">
+    <li>You may only edit or delete events that <strong>you</strong> created</li>
+
+  </ul>
+
+  <h4>Calendar View</h4>
+  <ul class="about-text">
+    <li>Click on calender view to see events laid out on an interactive monthly calendar for easier planning. </li>
+  </ul>
+
+  <hr>
+
+  <h3>Comments & Community Interaction</h3>
+  <ul class="about-text">
+    <li>Each resource and event has a comments section</li>
+  </ul>
+
+  <hr>
+    <h3 class="about-subtitle">Community Verification</h3>
     <p class="about-text">
-        Campus Connect is a simple community hub for Wellesley College students 
-        to share resources, find on-campus civic engagement events, and stay connected. 
-        Our goal is to make it easier for students to access support, discover 
-        opportunities, and build community in one organized place.
+        Campus-Connect uses a simple upvote/downvote system to help students verify which 
+        resources are trustworthy and up-to-date.
     </p>
 
+    <ul class="about-text">
+        <li><strong>Upvotes</strong> increase a resource’s credibility. Once a resource receives enough positive votes, it becomes marked as <em>Verified by the Community</em>.</li>
+        <li><strong>Downvotes</strong> signal that something may be inaccurate, outdated, or misleading.</li>
+        <li>If a resource accumulates too many downvotes, its status changes to <em>Needs Review</em> or may be <em>Removed</em> from public view.</li>
+    </ul>
+
     <p class="about-text">
-        This project was created as part of CS304.
+        This voting system ensures that the platform stays reliable and student-driven. 
+        The community helps keep information accurate, safe, and useful for everyone.
     </p>
 
-    <div class="team-box">
-        <div class="team-title">Created by:</div>
+    <hr>
+
+
+  <h3>Navigation & Search</h3>
+  <ul class="about-text">
+    <li>Use the top navigation bar to switch between Resources, Events, Login, and Logout</li>
+    <li>Search by keyword or filter by category</li>
+    <li>Clear Filters resets the page to show all results</li>
+  </ul>
+
+  <hr>
+
+  <p class="about-text">
+    Thank you for using Campus-Connect!  
+    Our goal is to make campus support easier to find and community engagement more accessible.
+  </p>
+   <div class="team-box">
+        <div class="team-title">Created By:</div>
         <ul class="team-list">
-            <li> Aayah Osman</li>
-            <li> Shelley Zheng</li>
-            <li> Julie Zeng</li>
+            <li>Aayah Osman</li>
+            <li>Shelley Zheng</li>
+            <li>Julie Zeng</li>
         </ul>
     </div>
+
 </div>
+
 
 {% endblock %}

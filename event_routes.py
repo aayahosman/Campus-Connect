@@ -9,6 +9,7 @@ dbi.conf('cs304jas_db')
 
 event_bp = Blueprint('event_bp', __name__, url_prefix='/events')
 
+#pre defined categories to allow for filters
 EVENT_CATEGORIES = [
     "Academic Event",
     "Activism",
@@ -77,7 +78,7 @@ def list_events():
     curs.execute(sql, params)
     events = curs.fetchall()
 
-    # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
+    # build category list for dropdown with valid categories
     categories = sorted(EVENT_CATEGORIES)
 
     return render_template(

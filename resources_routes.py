@@ -4,7 +4,7 @@ import cs304dbi as dbi
 from auth_utils import login_required
 
 resource_bp = Blueprint('resources', __name__, url_prefix='/resources')
-
+#predefine categories 
 RESOURCE_CATEGORIES = [
     "Academic Support",
     "Basic Needs",
@@ -71,7 +71,7 @@ def list_resources():
     curs.execute(sql, params)
     resources = curs.fetchall()
 
-    # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
+    # build category list for dropdown with valid categories,
     categories = sorted(RESOURCE_CATEGORIES)
 
 
