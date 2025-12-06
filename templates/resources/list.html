@@ -14,7 +14,7 @@
   {% endif %}
 </div>
 
-<form method="get" class="search-filter" style="margin-bottom: 1rem;">
+<form method="get" class="search-filter">
   <input
     type="text"
     name="q"
@@ -32,8 +32,15 @@
     {% endfor %}
   </select>
 
-  <button type="submit" class="btn">Search</button>
+  <div class="search-filter-buttons">
+    <button type="submit" class="search-btn">Search</button>
+
+    <a href="{{ url_for('resources.list_resources') }}" class="clear-filter-btn">
+      Clear Filters
+    </a>
+  </div>
 </form>
+
 
 
 <div class="resource-grid">
@@ -111,7 +118,11 @@
 </div>
 
   {% else %}
-    <p>No resources posted yet. Add one to get started!</p>
+    {% if q or selected_category %}
+      <p>No resources matched your search.</p>
+    {% else %}
+      <p>No resources posted yet. Add one to get started!</p>
+    {% endif %}
   {% endfor %}
 </div>
 

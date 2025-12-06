@@ -5,6 +5,25 @@ from auth_utils import login_required
 
 resource_bp = Blueprint('resources', __name__, url_prefix='/resources')
 
+RESOURCE_CATEGORIES = [
+    "Academic Support",
+    "Basic Needs",
+    "Career & Professional Development",
+    "Community Programs",
+    "Emergency Services",
+    "Financial Assistance",
+    "Food Assistance",
+    "Health and Wellness",
+    "Housing Support",
+    "Legal Support",
+    "Material Assistance",
+    "Mental Health",
+    "Other",
+    "Student Life & Recreation",
+    "Technology Resources",
+    "Transportation"
+
+]
 def getConn():
     return connect()
 
@@ -53,14 +72,8 @@ def list_resources():
     resources = curs.fetchall()
 
     # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
-    curs.execute('''
-        SELECT DISTINCT category
-        FROM resources
-        WHERE category IS NOT NULL AND category <> ''
-        ORDER BY category
-    ''')
-    cat_rows = curs.fetchall()
-    categories = [row['category'] for row in cat_rows]
+    categories = sorted(RESOURCE_CATEGORIES)
+
 
     return render_template(
         'resources/list.html',
@@ -130,10 +143,10 @@ def edit_resource(resource_id):
     curs.execute('SELECT * FROM resources WHERE resource_id=%s', (resource_id,))
     resource = curs.fetchone()
 
-    # Ownership check (BEFORE any updates)
-    if resource['created_by'] != session.get('user_id'):
-        flash("You can only edit resources you created!", "warning")
-        return redirect(url_for('resources.list_resources'))
+    # # Ownership check (BEFORE any updates)
+    # if resource['created_by'] != session.get('user_id'):
+    #     flash("You can only edit resources you created!", "warning")
+    #     return redirect(url_for('resources.list_resources'))
     
     if request.method == 'POST':
         title = request.form['title']

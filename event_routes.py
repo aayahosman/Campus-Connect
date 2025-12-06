@@ -9,6 +9,24 @@ dbi.conf('cs304jas_db')
 
 event_bp = Blueprint('event_bp', __name__, url_prefix='/events')
 
+EVENT_CATEGORIES = [
+    "Academic Event",
+    "Activism",
+    "Basic Needs Support",
+    "Career & Professional Development",
+    "Civic Engagement",
+    "Community Event",
+    "Crafts & Creative Activities",
+    "Cultural",
+    "Food Resources / Food Events",
+    "Health & Wellness",
+    "Internship & Career Exploration",
+    "Research Opportunities",
+    "Social",
+    "Student Life",
+    "Workshops & Training",
+]
+
 def getConn():
     return connect()
 
@@ -60,14 +78,7 @@ def list_events():
     events = curs.fetchall()
 
     # build category list for dropdown with valid categories, will be edited later to avoid categories that are too similar 
-    curs.execute('''
-        SELECT DISTINCT category
-        FROM events
-        WHERE category IS NOT NULL AND category <> ''
-        ORDER BY category
-    ''')
-    cat_rows = curs.fetchall()
-    categories = [row['category'] for row in cat_rows]
+    categories = sorted(EVENT_CATEGORIES)
 
     return render_template(
         'events/list.html',
@@ -230,9 +241,9 @@ def edit_event(event_id):
         return redirect(url_for('event_bp.list_events'))
 
     # Ownership check
-    if event['created_by'] != session.get('user_id'):
-        flash("You can only edit events you created!", "warning")
-        return redirect(url_for('event_bp.list_events'))
+    # if event['created_by'] != session.get('user_id'):
+    #     flash("You can only edit events you created!", "warning")
+    #     return redirect(url_for('event_bp.list_events'))
 
     if request.method == 'POST':
         title = request.form['title']
@@ -321,7 +332,6 @@ def delete_event(event_id):
 
 
 # RSVP
-@event_bp.route('/<int:event_id>/rsvp', methods = ['POST'])
 @event_bp.route('/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp(event_id):

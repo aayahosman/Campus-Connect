@@ -230,6 +230,85 @@ footer {
     margin-bottom: 15px;
 }
 
+/* Search/filter bar layout */
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.search-filter input[type="text"],
+.search-filter select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd6e0;
+  font-size: 0.95rem;
+}
+
+/* Group the two buttons together on the right side of the form row */
+.search-filter-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Smaller, blue Search button –
+   visually similar to .btn / Add New Event */
+.search-btn {
+  background-color: #0055aa;
+  color: white;
+  border: none;
+  padding: 6px 10px;      /* a bit smaller than header buttons */
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.search-btn:hover {
+  background-color: #004080;
+}
+
+/* Dark mode search button */
+:root.dark .search-btn {
+  background-color: var(--link);
+  color: #0a0a0a;
+}
+
+/* Clear Filters button – similar to .calendar-btn but smaller */
+.clear-filter-btn {
+  background: var(--card);
+  color: #003366;
+  border: 1px solid var(--border);
+  padding: 6px 10px;         /* smaller */
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.2s ease;
+}
+
+.clear-filter-btn:hover {
+  background: var(--border);
+  color: #00264d;
+}
+
+/* Dark mode for Clear Filters */
+:root.dark .clear-filter-btn {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--link);
+}
+
+:root.dark .clear-filter-btn:hover {
+  background: var(--border);
+  color: #fff;
+}
+
+
 .event-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -858,6 +937,7 @@ footer {
   color: var(--text);
   opacity: 0.6;
 }
+<<<<<<< HEAD
 
 /* Verification box at bottom of card */
 .verification-box {
