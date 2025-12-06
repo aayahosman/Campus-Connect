@@ -932,12 +932,10 @@ footer {
   color: #777;
   font-weight: 600;
 }
-
 :root.dark .unverified {
   color: var(--text);
   opacity: 0.6;
 }
-<<<<<<< HEAD
 
 /* Verification box at bottom of card */
 .verification-box {
@@ -975,7 +973,6 @@ footer {
   background: var(--link);
   color: #000;
 }
-
 
 /* Wrap the whole search/filter row nicely */
 .search-filter {
