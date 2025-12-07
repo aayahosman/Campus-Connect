@@ -2,9 +2,8 @@
 {% block content %}
 <h2>Campus Services</h2>
 
-<div class="event-header">
-  <div class="event-header-buttons">
-
+<div class="service-header">
+  <div class="service-header-buttons">
     {% if session.get('logged_in') %}
       <a href="{{ url_for('services.add_service') }}" class="btn add-btn icon-btn">
         <svg class="icon" viewBox="0 0 24 24">
@@ -13,86 +12,44 @@
         Add New Service
       </a>
     {% else %}
-      <a href="{{ url_for('services.add_service') }}" 
-         class="btn add-btn disabled-btn icon-btn"
-         title="Login required">
+      <a href="{{ url_for('services.add_service') }}" class="btn add-btn disabled-btn icon-btn" title="Login required">
         <svg class="icon" viewBox="0 0 24 24">
           <path fill="currentColor" d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
         </svg>
         Add New Service
       </a>
     {% endif %}
-
   </div>
 </div>
 
-<form method="get" class="search-filter" style="margin-bottom: 1rem;">
-  <input
-    type="text"
-    name="q"
-    placeholder="Search services..."
-    value="{{ q or '' }}"
-  >
-
-  <select name="category">
-    <option value="">All categories</option>
-    {% for c in categories %}
-      <option value="{{ c }}"
-        {% if selected_category == c %}selected{% endif %}>
-        {{ c }}
-      </option>
-    {% endfor %}
-  </select>
-
+<form method="get" class="search-filter">
+  <input type="text" name="q" placeholder="Search services..." value="{{ q or '' }}">
   <button type="submit" class="btn">Search</button>
 </form>
 
-<div class="event-grid">
-
+<div class="service-grid">
   {% for s in services %}
-  <div class="event-card">
-
-    {% if s.created_by == session.get('user_id') %}
-      <div class="card-badge-you">Added by you</div>
-    {% endif %}
-
-    <h3>{{ s.service_name }}</h3>
-
-    {% if s.category %}
-      <p><strong>Category:</strong> {{ s.category }}</p>
-    {% endif %}
-
-    {% if s.price_range %}
-      <p><strong>Price Range:</strong> {{ s.price_range }}</p>
-    {% endif %}
-
-    <p><strong>Description:</strong> {{ s.description }}</p>
-
-    {% if s.service_location_type %}
-      <p><strong>Location Type:</strong> {{ s.service_location_type }}</p>
-    {% endif %}
-
-    {% if s.availability %}
-      <p><strong>Availability:</strong> {{ s.availability }}</p>
-    {% endif %}
-
-    {% if s.contact_method %}
-      <p><strong>Contact:</strong> {{ s.contact_method }}</p>
-    {% endif %}
-
-    <div class="actions">
-      <a href="{{ url_for('services.service_details', service_id=s.service_id) }}" class="btn-sm view">View</a>
-      <a href="{{ url_for('services.edit_service', service_id=s.service_id) }}" class="btn-sm edit">Edit</a>
-      <form action="{{ url_for('services.delete_service', service_id=s.service_id) }}" method="POST" class="inline-form">
-        <button type="submit" class="btn-sm delete">Delete</button>
-      </form>
+    <div class="service-card">
+      {% if s.created_by == session.get('user_id') %}
+        <div class="card-badge-you">Added by you</div>
+      {% endif %}
+      <h3>{{ s.service_name }}</h3>
+      {% if s.category %}<p><strong>Category:</strong> {{ s.category }}</p>{% endif %}
+      {% if s.price_range %}<p><strong>Price Range:</strong> {{ s.price_range }}</p>{% endif %}
+      <p><strong>Description:</strong> {{ s.description }}</p>
+      {% if s.service_location_type %}<p><strong>Location Type:</strong> {{ s.service_location_type }}</p>{% endif %}
+      {% if s.availability %}<p><strong>Availability:</strong> {{ s.availability }}</p>{% endif %}
+      {% if s.contact_method %}<p><strong>Contact:</strong> {{ s.contact_method }}</p>{% endif %}
+      <div class="actions">
+        <a href="{{ url_for('services.edit_service', service_id=s.service_id) }}" class="btn-sm edit">Edit</a>
+        <form action="{{ url_for('services.delete_service', service_id=s.service_id) }}" method="POST" class="inline-form">
+          <button type="submit" class="btn-sm delete">Delete</button>
+        </form>
+      </div>
     </div>
-
-  </div>
   {% else %}
     <p>No services posted yet. Add one to get started!</p>
   {% endfor %}
-
 </div>
 
 {% endblock %}
