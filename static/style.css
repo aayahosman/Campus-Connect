@@ -41,8 +41,8 @@ body {
 }
 
 main {
-  flex: 1;           
-  padding: 20px;     
+  flex: 1;
+  padding: 20px;
 }
 
 /* Header */
@@ -635,7 +635,7 @@ footer {
 
 /* Dark mode override */
 :root.dark .toggle-comments-btn {
-  background: var(--link); 
+  background: var(--link);
   color: #0a0a0a;
 }
 
@@ -666,7 +666,7 @@ footer {
 
 /* Dark mode name color */
 :root.dark .comment strong {
-  color: var(--link); 
+  color: var(--link);
 }
 
 /* Time text */
@@ -690,8 +690,8 @@ footer {
   border: 1px solid var(--border);
   margin-top: 8px;
   font-size: 0.9rem;
-  background: var(--card);       
-  color: var(--text);            
+  background: var(--card);
+  color: var(--text);
 }
 
 /* Comment input dark focus */
@@ -1283,3 +1283,134 @@ ul.about-text li {
   background-color: #a82828;
 }
 
+/* ---------- Service Grid ---------- */
+.service-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.service-header-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.service-card {
+  background: var(--card);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.service-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+.service-card p {
+  margin: 6px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.inline-form {
+  display: inline;
+}
+
+.card-badge-you {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #003366;
+  color: white;
+  font-size: 0.75em;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+/* Disabled Add button */
+.disabled-btn {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background-color: #8ea8c8 !important;
+  color: white !important;
+}
+
+/* ---- SERVICES LIST ---- */
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.service-header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px; /* match resources/events */
+}
+
+.service-card {
+    background-color: var(--card);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-badge-you {
+    background-color: #4caf50; /* or #003366, pick one */
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    align-self: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.btn.add-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+}
+
+.btn.add-btn.disabled-btn {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.inline-form {
+    display: inline;
+}
