@@ -144,9 +144,9 @@ def edit_resource(resource_id):
     resource = curs.fetchone()
 
     # # Ownership check (BEFORE any updates)
-    # if resource['created_by'] != session.get('user_id'):
-    #     flash("You can only edit resources you created!", "warning")
-    #     return redirect(url_for('resources.list_resources'))
+    if resource['created_by'] != session.get('user_id'):
+        flash("You can only edit resources you created!", "warning")
+        return redirect(url_for('resources.list_resources'))
     
     if request.method == 'POST':
         title = request.form['title']

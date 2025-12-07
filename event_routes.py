@@ -242,9 +242,9 @@ def edit_event(event_id):
         return redirect(url_for('event_bp.list_events'))
 
     # Ownership check
-    # if event['created_by'] != session.get('user_id'):
-    #     flash("You can only edit events you created!", "warning")
-    #     return redirect(url_for('event_bp.list_events'))
+    if event['created_by'] != session.get('user_id'):
+        flash("You can only edit events you created!", "warning")
+        return redirect(url_for('event_bp.list_events'))
 
     if request.method == 'POST':
         title = request.form['title']

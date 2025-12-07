@@ -142,13 +142,113 @@
     {% endif %}
   {% endfor %}
 </div>
+
+<!-- Edit Comment Modal -->
+<div id="edit-comment-modal" class="modal-overlay" style="display: none;">
+  <div class="modal">
+    <h3>Edit your comment</h3>
+    <textarea id="edit-comment-text" rows="4"></textarea>
+
+  <div class="modal-actions">
+    <button id="edit-comment-save-btn" class="modal-btn modal-btn-primary">Save</button>
+    <button id="edit-comment-cancel-btn" class="modal-btn modal-btn-secondary">Cancel</button>
+  </div>
+
+  </div>
+</div>
+
+<!-- Delete Comment Modal -->
+<div id="delete-comment-modal" class="modal-overlay" style="display: none;">
+  <div class="modal modal-danger">
+    <h3>Delete comment?</h3>
+    <p style="margin: 0.25rem 0 0.75rem 0; font-size: 0.9rem;">
+      This action can’t be undone.
+    </p>
+
+    <div class="modal-actions">
+      <button id="delete-comment-confirm-btn" class="modal-btn modal-btn-primary" style="background-color:#d32f2f;">
+        Delete
+      </button>
+      <button id="delete-comment-cancel-btn" class="modal-btn modal-btn-secondary">
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
+let currentCommentId = null;
+let currentCommentElement = null;
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Load comments for each event on page load
   document.querySelectorAll(".comment-section").forEach(section => {
     const eventId = section.dataset.eventId;
     loadEventComments(eventId);
   });
+
+  // ====== EDIT COMMENT MODAL LOGIC ======
+  const modal = document.getElementById("edit-comment-modal");
+  const textarea = document.getElementById("edit-comment-text");
+  const saveBtn = document.getElementById("edit-comment-save-btn");
+  const cancelBtn = document.getElementById("edit-comment-cancel-btn");
+
+  // global function used by onclick="openEditComment(...)"
+  window.openEditComment = function(commentId) {
+    const commentDiv = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+    if (!commentDiv) return;
+
+    const contentEl = commentDiv.querySelector(".comment-content");
+    currentCommentId = commentId;
+    currentCommentElement = contentEl;
+
+    textarea.value = contentEl.textContent.trim();
+    modal.style.display = "flex";
+  };
+
+  cancelBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    currentCommentId = null;
+    currentCommentElement = null;
+  });
+
+  saveBtn.addEventListener("click", () => {
+    const newContent = textarea.value.trim();
+    if (!newContent) {
+      alert("Comment cannot be empty.");
+      return;
+    }
+
+    fetch(`/comments/${currentCommentId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: newContent })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      if (currentCommentElement) {
+        currentCommentElement.textContent = newContent;
+      }
+
+      modal.style.display = "none";
+      currentCommentId = null;
+      currentCommentElement = null;
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Error updating comment");
+    });
+  });
 });
+
+// ====== COMMENTS + VOTES FUNCTIONS ======
 
 function loadEventComments(eventId) {
   fetch(`/comments/event/${eventId}`)
@@ -156,13 +256,13 @@ function loadEventComments(eventId) {
     .then(data => {
       const container = document.getElementById(`comments-event-${eventId}`);
       container.innerHTML = data.map(c => `
-  <div class="comment">
+  <div class="comment" data-comment-id="${c.comment_id}">
     <div class="comment-header">
       <strong>${c.author}</strong>
       ${c.owned ? `
         <span class="comment-actions">
-          <button class="comment-edit" onclick="editComment(${c.comment_id}, '${c.content.replace(/'/g, "\\'")}')">Edit</button>
-          <button class="comment-delete" onclick="deleteComment(${c.comment_id}, ${c.event_id}, ${c.resource_id})">Delete</button>
+          <button class="comment-edit" type="button" onclick="openEditComment(${c.comment_id})">Edit</button>
+          <button class="comment-delete" type="button" onclick="deleteComment(${c.comment_id}, ${eventId}, null)">Delete</button>
         </span>
       ` : ""}
     </div>
@@ -206,6 +306,7 @@ function toggleComments(eventId) {
     btn.textContent = "💬 View Comments";
   }
 }
+
 function deleteComment(commentId, eventId, resourceId) {
   if (!confirm("Delete this comment?")) return;
 
@@ -213,58 +314,31 @@ function deleteComment(commentId, eventId, resourceId) {
     .then(res => res.json())
     .then(() => {
       if (eventId) loadEventComments(eventId);
-      if (resourceId) loadResourceComments(resourceId);
     });
-}
-
-function editComment(commentId, oldContent) {
-  const newContent = prompt("Edit your comment:", oldContent);
-  if (newContent === null) return;
-
-  fetch(`/comments/${commentId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content: newContent })
-  })
-  .then(res => res.json())
-  .then(() => {
-    // reload both pages correctly
-    const eventBox = document.querySelector(`[id^="comments-event-"]`);
-    const resourceBox = document.querySelector(`[id^="comments-resource-"]`);
-
-    if (eventBox) {
-      const eventId = eventBox.id.replace("comments-event-", "");
-      loadEventComments(eventId);
-    }
-    if (resourceBox) {
-      const resourceId = resourceBox.id.replace("comments-resource-", "");
-      loadResourceComments(resourceId);
-    }
-  });
 }
 
 async function vote(type, id, voteType) {
-    let res = await fetch(`/votes/${type}/${id}`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vote: voteType })
-    });
+  let res = await fetch(`/votes/${type}/${id}`, {
+    method: 'POST',
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ vote: voteType })
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (res.status === 403) {
-        alert("You must be logged in to vote.");
-        return;
-    }
+  if (res.status === 403) {
+      alert("You must be logged in to vote.");
+      return;
+  }
 
-    if (data.message === "already voted") {
-        alert("You already cast this vote.");
-        return;
-    }
+  if (data.message === "already voted") {
+      alert("You already cast this vote.");
+      return;
+  }
 
-    location.reload();
+  location.reload();
 }
-
 </script>
+
 
 {% endblock %}

@@ -684,6 +684,7 @@ footer {
 /* Comment input box */
 .comment-input {
   width: 100%;
+  box-sizing: border-box;
   padding: 8px;
   border-radius: 8px;
   border: 1px solid var(--border);
@@ -1147,3 +1148,138 @@ ul.about-text li {
   font-size: 1rem;
   color: var(--text);
 }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.modal textarea {
+  width: 100%;
+  box-sizing: border-box;   /* makes width include padding */
+  padding: 10px 12px;       /* matches other input paddings */
+  margin-top: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  background: var(--bg);
+  color: var(--text);
+  resize: vertical;         /* optional: keeps it neat */
+}
+
+
+.modal-actions {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* ----- Shared modal styling with site theme ----- */
+
+.modal {
+  background: var(--card);
+  color: var(--text);
+  padding: 1.5rem 1.75rem;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border);
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  color: #003366;
+  font-size: 1.15rem;
+}
+
+:root.dark .modal h3 {
+  color: var(--link);
+}
+
+.modal textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.modal textarea:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+}
+
+.modal-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Modal buttons styled like the rest of the site */
+.modal-btn {
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+/* Primary / Save button */
+.modal-btn-primary {
+  background-color: #0055aa;
+  color: white;
+}
+
+.modal-btn-primary:hover {
+  background-color: #004080;
+}
+
+/* Secondary / Cancel button */
+.modal-btn-secondary {
+  background: var(--card);
+  color: #003366;
+  border: 1px solid var(--border);
+}
+
+.modal-btn-secondary:hover {
+  background: var(--border);
+}
+
+/* Dark mode tweaks */
+:root.dark .modal-btn-secondary {
+  background: var(--card);
+  color: var(--link);
+}
+:root.dark .modal-btn-secondary:hover {
+  background: var(--border);
+}
+
+.modal-danger .modal-btn-primary {
+  background-color: #d32f2f;
+}
+.modal-danger .modal-btn-primary:hover {
+  background-color: #a82828;
+}
+
