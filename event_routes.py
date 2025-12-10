@@ -110,7 +110,7 @@ def add_event():
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event'] 
-        category = request.form['category']
+        category = request.form.get('category') or event['category']
         description = request.form['description']
         contact_info = request.form.get('contact_info')
 
@@ -249,7 +249,7 @@ def edit_event(event_id):
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event']
-        category = request.form['category']
+        category = request.form.get('category') or event['category']
         description = request.form['description']
         contact_info = request.form.get('contact_info')
 
