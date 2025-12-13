@@ -1323,6 +1323,10 @@ ul.about-text li {
   color: #003366;
 }
 
+:root.dark .service-card h3 {
+  color: var(--link);
+}
+
 .service-card p {
   margin: 6px 0;
 }
@@ -1413,4 +1417,16 @@ ul.about-text li {
 
 .inline-form {
     display: inline;
+}
+
+.service-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.service-header-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
