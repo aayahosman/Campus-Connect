@@ -90,19 +90,38 @@ def vote(item_type, item_id):
     upv = counts['upvotes']
     dnv = counts['downvotes']
 
-    # Status logic
-    if dnv >= 50 or (dnv - upv) >= 20:
-        status = 'removed'
-    elif dnv >= 20:
+    # HARD DELETE THRESHOLD
+    if dnv >= 50:
+        # Delete associated data first if needed
+        if item_type == "event":
+            curs.execute("DELETE FROM rsvp WHERE event_id=%s", [item_id])
+            curs.execute("DELETE FROM comments WHERE event_id=%s", [item_id])
+        else:
+            curs.execute("DELETE FROM comments WHERE resource_id=%s", [item_id])
+
+        curs.execute(f"DELETE FROM {table} WHERE {id_col}=%s", [item_id])
+        conn.commit()
+
+        flash(
+            f"This {item_type} was removed by the community due to excessive downvotes.",
+            "warning"
+        )
+
+        return jsonify({
+            "message": "item deleted",
+            "deleted": True
+        }), 200
+
+    # Otherwise: soft status updates
+    if dnv >= 20:
         status = 'flagged'
     else:
         status = 'active'
 
-    curs.execute(f'''
-        UPDATE {table}
-        SET status=%s
-        WHERE {id_col}=%s
-    ''', (status, item_id))
+    curs.execute(
+        f"UPDATE {table} SET status=%s WHERE {id_col}=%s",
+        (status, item_id)
+    )
 
     conn.commit()
     return jsonify({"message": "vote recorded", "status": status}), 200

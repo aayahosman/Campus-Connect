@@ -336,7 +336,12 @@ async function vote(type, id, voteType) {
       return;
   }
 
-  location.reload();
+  if (data.deleted) {
+  location.reload(); // flash will show after reload
+  return;
+}
+
+location.reload();
 }
 </script>
 

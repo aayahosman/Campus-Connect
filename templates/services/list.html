@@ -7,14 +7,18 @@
     {% if session.get('logged_in') %}
       <a href="{{ url_for('services.add_service') }}" class="btn add-btn icon-btn">
         <svg class="icon" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+          <path fill="currentColor"
+            d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
         </svg>
         Add New Service
       </a>
     {% else %}
-      <a href="{{ url_for('services.add_service') }}" class="btn add-btn disabled-btn icon-btn" title="Login required">
+      <a href="{{ url_for('services.add_service') }}"
+         class="btn add-btn disabled-btn icon-btn"
+         title="Login required">
         <svg class="icon" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+          <path fill="currentColor"
+            d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
         </svg>
         Add New Service
       </a>
@@ -22,9 +26,23 @@
   </div>
 </div>
 
+
 <form method="get" class="search-filter">
-  <input type="text" name="q" placeholder="Search services..." value="{{ q or '' }}">
-  <button type="submit" class="btn">Search</button>
+  <input
+    type="text"
+    name="q"
+    placeholder="Search services..."
+    value="{{ q or '' }}"
+  >
+
+  <div class="search-filter-buttons">
+    <button type="submit" class="search-btn">Search</button>
+
+    <a href="{{ url_for('services.list_services') }}"
+       class="clear-filter-btn">
+      Clear Filters
+    </a>
+  </div>
 </form>
 
 <div class="service-grid">
