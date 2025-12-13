@@ -12,26 +12,73 @@
 
     <div class="form-group">
       <label>Category:</label>
-      <select name="category" class="form-control">
-        <option value="" disabled selected>Select a category</option>
+      <select name="category" class="form-control" required>
+        <option value="" disabled>Select a category</option>
 
-        <option value="Academic Support">Academic Support</option>
-        <option value="Basic Needs">Basic Needs</option>
-        <option value="Career & Professional Development">Career & Professional Development</option>
-        <option value="Community Programs">Community Programs</option>
-        <option value="Emergency Services">Emergency Services</option>
-        <option value="Financial Assistance">Financial Assistance</option>
-        <option value="Food Assistance">Food Assistance</option>
-        <option value="Health and Wellness">Health and Wellness</option>
-        <option value="Housing Support">Housing Support</option>
-        <option value="Legal Support">Legal Support</option>
-        <option value="Material Assistance">Material Assistance</option>
-        <option value="Mental Health">Mental Health</option>
-        <option value="Other">Other</option>
-        <option value="Student Life & Recreation">Student Life & Recreation</option>
-        <option value="Technology Resources">Technology Resources</option>
-        <option value="Transportation">Transportation</option>
-
+        <option value="Academic Support"
+                {% if resource.category == "Academic Support" %}selected{% endif %}>
+          Academic Support
+        </option>
+        <option value="Basic Needs"
+                {% if resource.category == "Basic Needs" %}selected{% endif %}>
+          Basic Needs
+        </option>
+        <option value="Career & Professional Development"
+                {% if resource.category == "Career & Professional Development" %}selected{% endif %}>
+          Career & Professional Development
+        </option>
+        <option value="Community Programs"
+                {% if resource.category == "Community Programs" %}selected{% endif %}>
+          Community Programs
+        </option>
+        <option value="Emergency Services"
+                {% if resource.category == "Emergency Services" %}selected{% endif %}>
+          Emergency Services
+        </option>
+        <option value="Financial Assistance"
+                {% if resource.category == "Financial Assistance" %}selected{% endif %}>
+          Financial Assistance
+        </option>
+        <option value="Food Assistance"
+                {% if resource.category == "Food Assistance" %}selected{% endif %}>
+          Food Assistance
+        </option>
+        <option value="Health and Wellness"
+                {% if resource.category == "Health and Wellness" %}selected{% endif %}>
+          Health and Wellness
+        </option>
+        <option value="Housing Support"
+                {% if resource.category == "Housing Support" %}selected{% endif %}>
+          Housing Support
+        </option>
+        <option value="Legal Support"
+                {% if resource.category == "Legal Support" %}selected{% endif %}>
+          Legal Support
+        </option>
+        <option value="Material Assistance"
+                {% if resource.category == "Material Assistance" %}selected{% endif %}>
+          Material Assistance
+        </option>
+        <option value="Mental Health"
+                {% if resource.category == "Mental Health" %}selected{% endif %}>
+          Mental Health
+        </option>
+        <option value="Other"
+                {% if resource.category == "Other" %}selected{% endif %}>
+          Other
+        </option>
+        <option value="Student Life & Recreation"
+                {% if resource.category == "Student Life & Recreation" %}selected{% endif %}>
+          Student Life & Recreation
+        </option>
+        <option value="Technology Resources"
+                {% if resource.category == "Technology Resources" %}selected{% endif %}>
+          Technology Resources
+        </option>
+        <option value="Transportation"
+                {% if resource.category == "Transportation" %}selected{% endif %}>
+          Transportation
+        </option>
       </select>
     </div>
 

@@ -17,29 +17,76 @@
 
     <div class="form-group">
       <label>Event Category:</label>
-      <select name="category" class="form-control">
-        <option value="" disabled selected>Select an event category</option>
+      <select name="category" class="form-control" required>
+        <option value="" disabled>Select an event category</option>
 
-        <option value="Academic Event">Academic Event</option>
-        <option value="Activism">Activism</option>
-        <option value="Basic Needs Support">Basic Needs Support</option>
-        <option value="Career & Professional Development">Career & Professional Development</option>
-        <option value="Civic Engagement">Civic Engagement</option>
-        <option value="Community Event">Community Event</option>
-        <option value="Crafts & Creative Activities">Crafts & Creative Activities</option>
-        <option value="Cultural">Cultural</option>
-        <option value="Food Resources / Food Events">Food Resources / Food Events</option>
-        <option value="Health & Wellness">Health & Wellness</option>
-        <option value="Internship & Career Exploration">Internship & Career Exploration</option>
-        <option value="Research Opportunities">Research Opportunities</option>
-        <option value="Social">Social</option>
-        <option value="Student Life">Student Life</option>
-
-        <option value="Workshops & Training">Workshops & Training</option>
-        <option value="Other">Other</option>
-
+        <option value="Academic Event"
+                {% if event.category == "Academic Event" %}selected{% endif %}>
+          Academic Event
+        </option>
+        <option value="Activism"
+                {% if event.category == "Activism" %}selected{% endif %}>
+          Activism
+        </option>
+        <option value="Basic Needs Support"
+                {% if event.category == "Basic Needs Support" %}selected{% endif %}>
+          Basic Needs Support
+        </option>
+        <option value="Career & Professional Development"
+                {% if event.category == "Career & Professional Development" %}selected{% endif %}>
+          Career & Professional Development
+        </option>
+        <option value="Civic Engagement"
+                {% if event.category == "Civic Engagement" %}selected{% endif %}>
+          Civic Engagement
+        </option>
+        <option value="Community Event"
+                {% if event.category == "Community Event" %}selected{% endif %}>
+          Community Event
+        </option>
+        <option value="Crafts & Creative Activities"
+                {% if event.category == "Crafts & Creative Activities" %}selected{% endif %}>
+          Crafts & Creative Activities
+        </option>
+        <option value="Cultural"
+                {% if event.category == "Cultural" %}selected{% endif %}>
+          Cultural
+        </option>
+        <option value="Food Resources / Food Events"
+                {% if event.category == "Food Resources / Food Events" %}selected{% endif %}>
+          Food Resources / Food Events
+        </option>
+        <option value="Health & Wellness"
+                {% if event.category == "Health & Wellness" %}selected{% endif %}>
+          Health & Wellness
+        </option>
+        <option value="Internship & Career Exploration"
+                {% if event.category == "Internship & Career Exploration" %}selected{% endif %}>
+          Internship & Career Exploration
+        </option>
+        <option value="Research Opportunities"
+                {% if event.category == "Research Opportunities" %}selected{% endif %}>
+          Research Opportunities
+        </option>
+        <option value="Social"
+                {% if event.category == "Social" %}selected{% endif %}>
+          Social
+        </option>
+        <option value="Student Life"
+                {% if event.category == "Student Life" %}selected{% endif %}>
+          Student Life
+        </option>
+        <option value="Workshops & Training"
+                {% if event.category == "Workshops & Training" %}selected{% endif %}>
+          Workshops & Training
+        </option>
+        <option value="Other"
+                {% if event.category == "Other" %}selected{% endif %}>
+          Other
+        </option>
       </select>
     </div>
+
 
     <div class="form-group">
       <label>Contact Info:</label>

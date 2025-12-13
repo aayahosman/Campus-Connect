@@ -103,7 +103,8 @@ def add_resource():
 
     if request.method == 'POST':
         title = request.form['title']
-        category = request.form['category']
+        category = request.form.get('category') or category['category']
+
         description = request.form['description']
         contact_info = request.form['contact_info']
         status = request.form['status']
@@ -150,7 +151,9 @@ def edit_resource(resource_id):
     
     if request.method == 'POST':
         title = request.form['title']
-        category = request.form['category']
+       
+        category = request.form.get('category') or resource['category']
+
         description = request.form['description']
         contact_info = request.form['contact_info']
         status = request.form['status']
@@ -165,7 +168,7 @@ def edit_resource(resource_id):
 
     curs.execute('SELECT * FROM resources WHERE resource_id=%s', (resource_id,))
     resource = curs.fetchone()
-    return render_template('resources/edit.html', resource=resource)
+    return render_template('resources/edit.html', resource=resource, )
 
 # ---- Delete ----
 @resource_bp.route('/delete/<int:resource_id>', methods=['POST'])
