@@ -4,6 +4,9 @@ import cs304dbi as dbi
 import datetime
 from auth_utils import login_required
 from flask import jsonify
+import os
+from flask import current_app
+from werkzeug.utils import secure_filename
 
 dbi.conf('cs304jas_db')
 
@@ -110,7 +113,7 @@ def add_event():
     if request.method == 'POST':
         title = request.form['title']
         date_of_event = request.form['date_of_event'] 
-        category = request.form.get('category') or event['category']
+        category = request.form.get('category')
         description = request.form['description']
         contact_info = request.form.get('contact_info')
 
@@ -149,6 +152,26 @@ def add_event():
               description, contact_info,
               address1, address2, city, state, postal_code))
         conn.commit()
+        event_id = curs.lastrowid  # get newly created event id
+        file = request.files.get('image')
+        if file and file.filename != '':
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+                flash("Invalid image type.")
+                return redirect(url_for('event_bp.add_event'))
+            filename = secure_filename(f"event_{event_id}.{ext}")
+            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            upload_dir = current_app.config['UPLOAD_FOLDER']
+            os.makedirs(upload_dir, exist_ok=True)
+            file.save(path)
+            os.chmod(path, 0o444)
+            curs.execute(
+                '''UPDATE events
+                SET image_filename = %s
+                WHERE event_id = %s''',
+                (filename, event_id)
+            )
+            conn.commit()
         flash("Event created successfully!")
         return redirect(url_for('event_bp.list_events'))
 
@@ -220,20 +243,12 @@ def event_details(event_id):
 def edit_event(event_id):
     """
     Edit an existing event in the database.
-    This function retrieves an event by its ID, checks if the user has ownership of the event,
-    and allows the user to update the event's details such as title, date, category, description,
-    contact information, and address. If the event is not found or the user does not have permission
-    to edit it, appropriate warnings are flashed, and the user is redirected to the event list.
-    Parameters:
-        event_id (int): The unique identifier of the event to be edited.
-    Returns:
-        Redirects to the event list page after successful update or displays an edit form for the event.
     """
 
     conn = getConn()
     curs = conn.cursor(dbi.dictCursor)
 
-    # Fetch the event once
+    # Fetch the event
     curs.execute('SELECT * FROM events WHERE event_id=%s', (event_id,))
     event = curs.fetchone()
 
@@ -259,34 +274,58 @@ def edit_event(event_id):
         state = request.form.get('state')
         postal_code = request.form.get('postal_code')
 
+        # Update event fields
         curs.execute('''
             UPDATE events
             SET
-                title         = %s,
+                title = %s,
                 date_of_event = %s,
-                category      = %s,
-                description   = %s,
-                contact_info  = %s,
-                address1      = %s,
-                address2      = %s,
-                city          = %s,
-                state         = %s,
-                postal_code   = %s
+                category = %s,
+                description = %s,
+                contact_info = %s,
+                address1 = %s,
+                address2 = %s,
+                city = %s,
+                state = %s,
+                postal_code = %s
             WHERE event_id = %s
-        ''', (title, date_of_event, category,
-              description, contact_info,
-              address1, address2, city, state, postal_code,
-              event_id))
+        ''', (
+            title, date_of_event, category,
+            description, contact_info,
+            address1, address2, city, state, postal_code,
+            event_id
+        ))
+
+        # Optional image replacement
+        file = request.files.get('image')
+        if file and file.filename:
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+                flash("Invalid image type.")
+                return redirect(url_for('event_bp.edit_event', event_id=event_id))
+
+            filename = secure_filename(f"event_{event_id}.{ext}")
+            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+
+            file.save(path)
+            os.chmod(path, 0o444)
+
+            curs.execute(
+                '''UPDATE events
+                   SET image_filename = %s
+                   WHERE event_id = %s''',
+                (filename, event_id)
+            )
 
         conn.commit()
         flash("Event updated successfully!")
         return redirect(url_for('event_bp.list_events'))
 
-    # Format datetime for editing form
     if event['date_of_event']:
         event['date_of_event'] = event['date_of_event'].strftime('%Y-%m-%dT%H:%M')
 
     return render_template('events/edit.html', event=event)
+
 
 
 

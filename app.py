@@ -8,11 +8,14 @@ from event_routes import event_bp
 from comment_routes import comment_routes
 from vote_routes import votes_bp
 from services_routes import services_bp
-
+import os
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex()
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+
+app.config['UPLOAD_FOLDER'] = '/students/team_xyz/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB
 
 print(dbi.conf('cs304jas_db'))
 
@@ -26,12 +29,24 @@ app.register_blueprint(services_bp)
 
 @app.route('/')
 def index():
-    print("index")
-    return render_template('login.html', page_title='Main Page')
+    if 'user_id' in session:
+        return render_template(
+            'greet.html',
+            page_title='Home',
+            full_name=session.get('full_name'),
+            email=session.get('email')
+        )
+    else:
+        return render_template('login.html', page_title='Login')
 
 @app.route('/about/')
 def about():
     return render_template('about.html', page_title='About Us')
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 if __name__ == '__main__':
     import sys, os

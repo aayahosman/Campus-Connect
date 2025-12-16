@@ -3,7 +3,18 @@
 <div class="form-card">
   <h2>Edit Event</h2>
 
-  <form action="{{ url_for('event_bp.edit_event', event_id=event.event_id) }}" method="POST">
+  {% if event.image_filename %}
+  <div class="form-group">
+    <label>Current event image:</label>
+    <img src="{{ url_for('uploaded_file', filename=event.image_filename) }}"
+         alt="Current image for {{ event.title }}"
+         style="max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 0.5rem;">
+  </div>
+  {% endif %}
+
+  <form action="{{ url_for('event_bp.edit_event', event_id=event.event_id) }}"
+      method="POST"
+      enctype="multipart/form-data">
 
     <div class="form-group">
       <label>Title:</label>
@@ -96,6 +107,11 @@
     <div class="form-group">
       <label>Description:</label>
       <textarea name="description" rows="4">{{ event.description }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Replace Event Spam (optional):</label>
+      <input type="file" name="image" accept="image/*">
     </div>
 
     <div class="form-group">

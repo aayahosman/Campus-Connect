@@ -11,14 +11,6 @@ def get_conn():
     """
     return dbi.connect()
 
-# Home should be the login page
-@auth_bp.route('/')
-def index():
-    """
-    Render the application's landing page which is the login page. And renders login page HTML
-    """
-    return render_template('login.html', page_title='Campus Connect: Login')
-
 @auth_bp.route('/about')
 def about():
     """

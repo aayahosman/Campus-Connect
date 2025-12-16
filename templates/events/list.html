@@ -73,6 +73,12 @@
     {% if e.created_by == session.get('user_id') %}
       <div class="card-badge-you">Added by you</div>
     {% endif %}
+    
+    {% if e.image_filename %}
+      <img src="{{ url_for('uploaded_file', filename=e.image_filename) }}"
+       alt="Image for {{ e.title }}"
+       class="event-thumb">
+    {% endif %}
 
     <h3>{{ e.title }}</h3>
 
