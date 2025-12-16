@@ -1,7 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from auth_utils import login_required
-from cs304dbi import connect
+
+import cs304dbi as dbi
 from db import services_db
+
+def getConn():
+    """Return a database connection."""
+    return dbi.connect()
 
 services_bp = Blueprint('services', __name__, url_prefix='/services')
 
@@ -19,10 +24,6 @@ SERVICE_CATEGORIES = [
     "Other"
 ]
 
-
-def getConn():
-    """Return a database connection."""
-    return connect()
 
 
 @services_bp.route('/')

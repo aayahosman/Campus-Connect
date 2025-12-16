@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
-from cs304dbi import connect
+import cs304dbi as dbi
 import datetime
 from auth_utils import login_required
 from db import event_db
-import cs304dbi as dbi
 
 # Configure database connection for this blueprint/module
 dbi.conf('cs304jas_db')
@@ -32,7 +31,7 @@ EVENT_CATEGORIES = [
 
 def getConn():
     """Return a database connection."""
-    return connect()
+    return dbi.connect()
 
 
 @event_bp.route('/')
