@@ -1,14 +1,32 @@
-/* THEME VARIABLES */
+/* ============================================================
+   CAMPUS CONNECT - STYLESHEET
+   CSS organized by feature sections
+   ============================================================ */
+
+/* ============================================================
+   1. THEME VARIABLES & ROOT STYLES
+   ============================================================ */
+
+/* Light mode theme (default) */
 :root {
-  /* Light mode */
   --bg: #ffffff;
   --text: #1a1a1a;
   --card: #f7f7f7;
   --border: #d9d9d9;
   --link: #0055aa;
+
+  /* Accent colors */
+  --primary: #0055aa;
+  --primary-dark: #004080;
+  --primary-light: #1976d2;
+  --success: #2e7d32;
+  --warning: #d68900;
+  --error: #d32f2f;
+  --error-dark: #a82828;
+  --info: #1a73e8;
 }
 
-/* Dark mode */
+/* Dark mode theme */
 :root.dark {
   --bg: #121212;
   --text: #f1f1f1;
@@ -17,15 +35,16 @@
   --link: #7abaff;
 }
 
-a { color: var(--link); }
-
-.card, .resource-card, .event-card {
-  background: var(--card);
-  border: 1px solid var(--border);
+/* Base link styling */
+a {
+  color: var(--link);
 }
 
+/* ============================================================
+   2. LAYOUT & STRUCTURE
+   ============================================================ */
 
-/* Fixes header gap + sticky footer */
+/* Fixes header gap + sticky footer layout */
 html, body {
   margin: 0;
   padding: 0;
@@ -40,12 +59,16 @@ body {
   font-family: sans-serif;
 }
 
+/* Main content flex container */
 main {
   flex: 1;
   padding: 20px;
 }
 
-/* Header */
+/* ============================================================
+   3. HEADER & NAVIGATION
+   ============================================================ */
+
 header {
   width: 100%;
   background-color: #003366;
@@ -54,7 +77,20 @@ header {
   box-sizing: border-box;
 }
 
-/* Footer centered always */
+header nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   4. FOOTER
+   ============================================================ */
+
 footer {
   text-align: center;
   padding: 20px 0;
@@ -62,318 +98,133 @@ footer {
   opacity: 0.8;
 }
 
-  nav a {
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-  }
+/* ============================================================
+   5. CARD BASE STYLES (Shared by all card types)
+   ============================================================ */
 
-  nav a:hover {
-    text-decoration: underline;
-  }
+.card,
+.resource-card,
+.event-card,
+.service-card,
+.rsvp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
 
-  /* ---------- Buttons ---------- */
-  .theme-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s ease;
+.card:hover,
+.resource-card:hover,
+.event-card:hover,
+.service-card:hover,
+.rsvp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Card headings */
+.card h3,
+.resource-card h3,
+.event-card h3,
+.service-card h3,
+.rsvp-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+:root.dark .card h3,
+:root.dark .resource-card h3,
+:root.dark .event-card h3,
+:root.dark .service-card h3,
+:root.dark .rsvp-card h3 {
+  color: var(--link);
+}
+
+/* Card paragraphs */
+.card p,
+.resource-card p,
+.event-card p,
+.service-card p {
+  margin: 6px 0;
+}
+
+
+/* ============================================================
+   6. BUTTONS
+   ============================================================ */
+
+/* Primary button (main CTA) */
+.btn {
+  background-color: var(--primary);
+  color: white;
+  padding: 8px 12px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Theme toggle button (top-right) */
+.theme-btn {
+  background-color: #003366;
+  color: #ffffff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
 }
 
 .theme-btn:hover {
-    background: var(--border);
-    transform: scale(1.05);
+  background: var(--border);
+  transform: scale(1.05);
 }
+
 :root.dark .theme-btn {
   box-shadow: 0 0 8px #7abaff88;
 }
 
-:root.dark .resource-card h3,
-:root.dark .event-card h3,
-:root.dark .form-card h2,
-:root.dark .auth-box h2,
-:root.dark .form-group label,
-:root.dark .switch-text a {
-    color: var(--link);
-}
-
-  .btn {
-    background-color: #0055aa;
-    color: white;
-    padding: 8px 12px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-  }
-
-  .btn:hover {
-    background-color: #004080;
-  }
-
-  .btn-sm {
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .edit {
-    background-color: #1976d2;
-    color: white;
-  }
-
-  .edit:hover {
-    background-color: #1259a3;
-  }
-
-  .delete {
-    background-color: #d32f2f;
-    color: white;
-  }
-
-  .delete:hover {
-    background-color: #a82828;
-  }
-
-  /* ---------- Resource Grid ---------- */
-  .resource-header {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-  }
-
-  .resource-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-  }
-
-  .resource-card {
-    background: var(--card);
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    position: relative;
-  }
-
-  .resource-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-  }
-
-  .resource-card h3 {
-    margin-top: 0;
-    color: #003366;
-  }
-
-  .resource-card p {
-    margin: 6px 0;
-  }
-
-  .status.active {
-    color: green;
-    font-weight: 600;
-  }
-
-  .status.inactive {
-    color: #b33;
-    font-weight: 600;
-  }
-
-
-  .actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .inline-form {
-    display: inline;
-  }
-
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 15px;
-  }
-
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-  }
-
-  th {
-    background-color: #eee;
-  }
-
-  button {
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    padding: 5px 8px;
-    cursor: pointer;
-  }
-
-  /* ---------- Event Grid ---------- */
-.event-header {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-}
-
-/* Search/filter bar layout */
-.search-filter {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.search-filter input[type="text"],
-.search-filter select {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccd6e0;
-  font-size: 0.95rem;
-}
-
-/* Group the two buttons together on the right side of the form row */
-.search-filter-buttons {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-/* Smaller, blue Search button –
-   visually similar to .btn / Add New Event */
-.search-btn {
-  background-color: #0055aa;
+/* Edit button (for card actions) */
+.edit {
+  background-color: var(--primary-light);
   color: white;
-  border: none;
-  padding: 6px 10px;      /* a bit smaller than header buttons */
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  cursor: pointer;
 }
 
-.search-btn:hover {
-  background-color: #004080;
+.edit:hover {
+  background-color: #1259a3;
 }
 
-/* Dark mode search button */
-:root.dark .search-btn {
-  background-color: var(--link);
-  color: #0a0a0a;
+/* Delete/Remove button (for card actions) */
+.delete {
+  background-color: var(--error);
+  color: white;
 }
 
-/* Clear Filters button – similar to .calendar-btn but smaller */
-.clear-filter-btn {
-  background: var(--card);
-  color: #003366;
-  border: 1px solid var(--border);
-  padding: 6px 10px;         /* smaller */
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: none;
-  display: inline-block;
-  transition: 0.2s ease;
+.delete:hover {
+  background-color: var(--error-dark);
 }
 
-.clear-filter-btn:hover {
-  background: var(--border);
-  color: #00264d;
-}
-
-/* Dark mode for Clear Filters */
-:root.dark .clear-filter-btn {
-  background: var(--card);
-  border-color: var(--border);
-  color: var(--link);
-}
-
-:root.dark .clear-filter-btn:hover {
-  background: var(--border);
-  color: #fff;
-}
-
-
-.event-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.event-card {
-    background: var(--card);
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    position: relative;
-
-}
-
-.event-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-}
-
-.event-card h3 {
-    margin-top: 0;
-    color: #003366;
-}
-
-.event-card p {
-    margin: 6px 0;
-}
-
-/* RSVP / Status styling */
-.status.active {
-    color: green;
-    font-weight: 600;
-}
-
-.status.inactive {
-    color: #b33;
-    font-weight: 600;
-}
-
-/* Actions: Edit / Delete / RSVP buttons */
-.actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
-    margin-top: 10px;
-}
-
-.inline-form {
-    display: inline;
-}
-
-.flash-warning {
-  background-color: #fff4cc;
-  border-left: 6px solid #e6a800;
-  padding: 0.9rem 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  color: #8a6d00;
-  font-weight: bold;
-  font-size: 1rem;
-}
-
+/* Disabled button state */
 .disabled-btn {
   opacity: 0.55;
   cursor: not-allowed;
@@ -382,73 +233,173 @@ footer {
 }
 
 .disabled-btn:hover {
-  background-color: #8ea8c8;
+  background-color: #8ea8c8 !important;
 }
 
-.flash-container {
-  max-width: 700px;
-  margin: 1rem auto;
+/* ============================================================
+   7. RESOURCE SECTION
+   ============================================================ */
+
+.resource-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
 }
 
-.flash {
-  padding: 0.9rem 1.2rem;
-  margin-bottom: 0.75rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+/* Resource grid layout */
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
-/* Success (green) */
-.flash-success {
-  background-color: #e6f7ec;
-  border-left: 5px solid #34a853;
-  color: #256c3b;
+/* Resource-specific card styling (inherits from .card base) */
+.resource-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
 }
 
-/* Warning (yellow) */
-.flash-warning {
-  background-color: #fff9e5;
-  border-left: 5px solid #e6a700;
-  color: #735800;
+.resource-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
 }
 
-/* Error (red) */
-.flash-error {
-  background-color: #fdeaea;
-  border-left: 5px solid #d93025;
-  color: #7a1c15;
+.resource-card h3 {
+  margin-top: 0;
+  color: #003366;
 }
 
-/* Info (blue) */
-.flash-info {
-  background-color: #e7f2ff;
-  border-left: 5px solid #1a73e8;
-  color: #174ea6;
+.resource-card p {
+  margin: 6px 0;
 }
 
-
-.card-badge-you {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #003366;
-  color: white;
-  font-size: 0.75em;
-  padding: 4px 8px;
-  border-radius: 8px;
+/* Status badge styling */
+.status.active {
+  color: var(--success);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 
+.status.inactive {
+  color: #b33;
+  font-weight: 600;
+}
+
+/* ============================================================
+   8. EVENT SECTION
+   ============================================================ */
+
+.event-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.event-header-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Event grid layout */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Event-specific card styling */
+.event-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.event-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+.event-card p {
+  margin: 6px 0;
+}
+
+/* ============================================================
+   9. SERVICE SECTION
+   ============================================================ */
+
+.service-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+}
+
+.service-header-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Service grid layout */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Service-specific card styling */
+.service-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  position: relative;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.service-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+.service-card p {
+  margin: 6px 0;
+}
+
+/* ============================================================
+   10. FORMS
+   ============================================================ */
+
+/* Form card container */
 .form-card {
   max-width: 650px;
   margin: 2.5rem auto;
   padding: 2rem 2.5rem;
   background: var(--card);
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .form-card h2 {
@@ -458,6 +409,11 @@ footer {
   font-size: 1.8rem;
 }
 
+:root.dark .form-card h2 {
+  color: var(--link);
+}
+
+/* Form group (label + input) */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -469,6 +425,11 @@ footer {
   color: #003366;
 }
 
+:root.dark .form-group label {
+  color: var(--link);
+}
+
+/* Form inputs */
 .form-group input,
 .form-group textarea,
 .form-group select {
@@ -484,15 +445,16 @@ footer {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #0055aa;
-  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+  border-color: var(--primary);
+  box-shadow: 0 0 4px rgba(0, 85, 170, 0.3);
 }
 
+/* Submit button */
 .submit-btn {
   display: block;
   width: 100%;
   padding: 12px 0;
-  background-color: #0055aa;
+  background-color: var(--primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -500,18 +462,171 @@ footer {
   cursor: pointer;
   margin-top: 1.2rem;
   font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
 .submit-btn:hover {
-  background-color: #004080;
+  background-color: var(--primary-dark);
 }
 
-/* Back link */
+/* ============================================================
+   11. SEARCH & FILTER
+   ============================================================ */
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 1rem 0 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+/* Search input field */
+.search-filter input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.search-filter input[type="text"]:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 4px var(--link);
+}
+
+/* Select/dropdown in search */
+.search-filter select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.search-filter select:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 4px var(--link);
+}
+
+/* Button group within search filter */
+.search-filter-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Search button */
+.search-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+:root.dark .search-btn {
+  background-color: var(--link);
+  color: #0a0a0a;
+}
+
+/* Clear filters button */
+.clear-filter-btn {
+  background: var(--card);
+  color: #003366;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-filter-btn:hover {
+  background: var(--border);
+  color: #00264d;
+}
+
+:root.dark .clear-filter-btn {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--link);
+}
+
+:root.dark .clear-filter-btn:hover {
+  background: var(--border);
+  color: #fff;
+}
+
+/* ============================================================
+   12. TABLES
+   ============================================================ */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 15px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+th {
+  background-color: #eee;
+}
+
+/* ============================================================
+   13. SHARED UTILITY CLASSES
+   ============================================================ */
+
+/* Action buttons container */
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Inline form (for submitting without full-page form) */
+.inline-form {
+  display: inline;
+}
+
+/* Back link styling */
 .back-link {
   display: block;
   margin-top: 1rem;
   text-align: center;
 }
+
+/* ============================================================
+   14. AUTHENTICATION PAGES (Login/Signup)
+   ============================================================ */
 
 .auth-wrapper {
   display: flex;
@@ -519,108 +634,193 @@ footer {
   margin-top: 3rem;
 }
 
+/* Auth container box */
 .auth-box {
   width: 420px;
   background: var(--card);
   padding: 2rem 2.4rem;
   border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.10);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.10);
+  border: 1px solid var(--border);
 }
 
 .auth-box h2 {
   text-align: center;
   margin-bottom: 1rem;
-  color: #003366;
+  color: #002244;
 }
 
+:root.dark .auth-box h2 {
+  color: var(--link);
+}
+
+/* Auth form labels */
 .auth-box label {
   display: block;
   margin-top: 1rem;
   font-weight: bold;
 }
 
+/* Auth form inputs */
 .auth-box input,
 .auth-box select {
   width: 100%;
-  margin-top: .4rem;
-  padding: .55rem;
+  margin-top: 0.4rem;
+  padding: 0.55rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
 }
 
+.auth-box input:focus,
+.auth-box select:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 4px rgba(0, 85, 170, 0.3);
+}
+
+/* Submit button in auth box */
 .auth-box .btn {
   width: 100%;
   margin-top: 1.5rem;
-  padding: .7rem;
+  padding: 0.7rem;
   font-size: 1rem;
 }
 
+/* Switch text (e.g., "Already have an account?") */
 .switch-text {
   text-align: center;
   margin-top: 1rem;
 }
 
 .switch-text a {
-  color: #003366;
+  color: #002244;
   font-weight: 600;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
-.about-wrapper {
-  max-width: 750px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.about-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.2rem;
-  color: #003366;
-}
-
-:root.dark .about-title {
+:root.dark .switch-text a {
   color: var(--link);
 }
 
-.about-text {
-  font-size: 1.1rem;
-  line-height: 1.6rem;
-  color: var(--text);
-  margin-bottom: 1.5rem;
+/* ============================================================
+   15. BADGES & STATUS INDICATORS
+   ============================================================ */
+
+/* "Added by you" badge on cards */
+.card-badge-you {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: #1a73e5;
+  color: #ffffff;
+  font-size: 0.75em;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-.team-box {
-  margin-top: 2rem;
-  background: var(--card);
-  padding: 1.2rem 1.5rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+:root.dark .card-badge-you {
+  background-color: #66e08a;
+  color: #0a0a0a;
 }
 
-.team-title {
+/* Verification status indicators */
+.verified {
+  color: var(--success);
   font-weight: bold;
-  margin-bottom: 0.8rem;
+}
+
+.flagged {
+  color: #8a4f00;
+  font-weight: bold;
+}
+
+:root.dark .flagged {
+  color: #ffd36a;
+}
+
+.removed {
+  color: var(--error);
+  font-weight: bold;
+}
+
+.unverified {
+  color: #555;
+  font-weight: 600;
+}
+
+:root.dark .unverified {
   color: var(--text);
+  opacity: 0.6;
 }
 
-.team-list {
-  list-style: none;
-  padding-left: 0;
+/* Verification box at bottom of card */
+.verification-box {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.team-list li {
-  margin-bottom: 0.4rem;
-  font-size: 1.05rem;
-  color: var(--text);
+/* ============================================================
+   16. ALERT/FLASH MESSAGES
+   ============================================================ */
+
+/* Flash message container */
+.flash-container {
+  max-width: 700px;
+  margin: 1rem auto;
+}
+
+/* Base flash message styling */
+.flash {
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Success message (green) */
+.flash-success {
+  background-color: #e6f7ec;
+  border-left: 5px solid #34a853;
+  color: #256c3b;
+}
+
+/* Warning message (yellow/orange) */
+.flash-warning {
+  background-color: #fff9e5;
+  border-left: 5px solid #e6a700;
+  color: #735800;
+}
+
+/* Error message (red) */
+.flash-error {
+  background-color: #fdeaea;
+  border-left: 5px solid #d93025;
+  color: #7a1c15;
+}
+
+/* Info message (blue) */
+.flash-info {
+  background-color: #e7f2ff;
+  border-left: 5px solid var(--info);
+  color: #174ea6;
 }
 
 
-/* Toggle button */
+/* ============================================================
+   17. COMMENTS SECTION
+   ============================================================ */
+
+/* Toggle comments button */
 .toggle-comments-btn {
   background: #003366;
   color: white;
@@ -631,9 +831,9 @@ footer {
   border: none;
   margin-top: 8px;
   font-weight: 600;
+  transition: all 0.2s ease;
 }
 
-/* Dark mode override */
 :root.dark .toggle-comments-btn {
   background: var(--link);
   color: #0a0a0a;
@@ -659,29 +859,27 @@ footer {
   line-height: 1.3rem;
 }
 
-/* Author name */
+/* Comment author name */
 .comment strong {
   color: #003366;
 }
 
-/* Dark mode name color */
 :root.dark .comment strong {
   color: var(--link);
 }
 
-/* Time text */
+/* Comment timestamp */
 .comment .time {
   opacity: 0.7;
   font-size: 0.8rem;
 }
 
-/* Dark mode time color */
 :root.dark .comment .time {
   color: var(--text);
   opacity: 0.55;
 }
 
-/* Comment input box */
+/* Comment input textarea */
 .comment-input {
   width: 100%;
   box-sizing: border-box;
@@ -694,16 +892,15 @@ footer {
   color: var(--text);
 }
 
-/* Comment input dark focus */
 .comment-input:focus {
   outline: none;
   border-color: var(--link);
-  box-shadow: 0 0 4px rgba(0,85,170,0.3);
+  box-shadow: 0 0 4px rgba(0, 85, 170, 0.3);
 }
 
-/* Post button */
+/* Post comment button */
 .comment-post-btn {
-  background: #0055aa;
+  background: var(--primary);
   color: white;
   padding: 6px 10px;
   border-radius: 6px;
@@ -712,16 +909,21 @@ footer {
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
-/* Dark mode post button */
+.comment-post-btn:hover {
+  background-color: var(--primary-dark);
+}
+
 :root.dark .comment-post-btn {
   background: var(--link);
   color: #0a0a0a;
 }
 
+/* Comment action buttons (edit/delete) */
 .comment-actions button {
-  background: #0055aa;
+  background: var(--primary);
   color: white;
   border: none;
   padding: 3px 7px;
@@ -729,19 +931,142 @@ footer {
   border-radius: 4px;
   font-size: 0.75rem;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
+.comment-actions button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Edit comment button variant */
 .comment-edit {
-  background: #1976d2;
+  background: var(--primary-light);
 }
 
+.comment-edit:hover {
+  background-color: #1259a3;
+}
+
+/* Delete comment button variant */
 .comment-delete {
-  background: #d32f2f;
+  background: var(--error);
+}
+
+.comment-delete:hover {
+  background-color: var(--error-dark);
 }
 
 :root.dark .comment-actions button {
   background: var(--link);
   color: #000;
+}
+
+/* ============================================================
+   18. ABOUT PAGE
+   ============================================================ */
+
+/* About page wrapper */
+.about-wrapper {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem 2.4rem;
+  background-color: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+}
+
+/* About page title */
+.about-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+  color: #003366;
+}
+
+:root.dark .about-title {
+  color: var(--link);
+}
+
+/* About page paragraphs */
+.about-text {
+  font-size: 1.02rem;
+  line-height: 1.6rem;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+
+/* About page section headings */
+.about-wrapper h3 {
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.25rem;
+  color: #003366;
+}
+
+.about-wrapper h4 {
+  margin-top: 1.1rem;
+  margin-bottom: 0.4rem;
+  font-size: 1.05rem;
+  color: #004a80;
+}
+
+:root.dark .about-wrapper h3,
+:root.dark .about-wrapper h4 {
+  color: var(--link);
+}
+
+/* Lists on about page */
+ul.about-text {
+  padding-left: 1.2rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.8rem;
+}
+
+ul.about-text li {
+  margin-bottom: 0.35rem;
+  line-height: 1.5rem;
+}
+
+/* Divider in about page */
+.about-wrapper hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.4rem 0;
+  opacity: 0.8;
+}
+
+/* Team section at bottom of about */
+.team-box {
+  margin-top: 1.8rem;
+  background: var(--card);
+  padding: 1.1rem 1.4rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.team-title {
+  font-weight: bold;
+  margin-bottom: 0.6rem;
+  color: #003366;
+}
+
+:root.dark .team-title {
+  color: var(--link);
+}
+
+/* Team member list */
+.team-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.team-list li {
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: var(--text);
 }
 
 .event-header-buttons {
@@ -920,9 +1245,14 @@ footer {
 }
 
 .flagged {
-  color: #d68900;
+  color: #8a4f00;
   font-weight: bold;
 }
+
+:root.dark .flagged {
+  color: #ffd36a;
+}
+
 
 .removed {
   color: #c62828;
@@ -930,7 +1260,7 @@ footer {
 }
 
 .unverified {
-  color: #777;
+  color: #555;
   font-weight: 600;
 }
 :root.dark .unverified {
@@ -973,460 +1303,4 @@ footer {
 :root.dark .vote-btn {
   background: var(--link);
   color: #000;
-}
-
-/* Wrap the whole search/filter row nicely */
-.search-filter {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--card);
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  max-width: 600px;
-  margin: 1rem 0 1.5rem 0;
-}
-
-/* Search input */
-.search-filter input[type="text"] {
-  flex: 1;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 0.95rem;
-}
-
-.search-filter input[type="text"]:focus {
-  outline: none;
-  border-color: var(--link);
-  box-shadow: 0 0 4px var(--link);
-}
-
-/* Dropdown */
-.search-filter select {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.search-filter select:focus {
-  outline: none;
-  border-color: var(--link);
-  box-shadow: 0 0 4px var(--link);
-}
-
-/* The blue search button */
-.search-filter .btn {
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-/* Dark mode tweaks */
-:root.dark .search-filter {
-  background: var(--card);
-  border-color: var(--border);
-  box-shadow: 0 2px 6px rgba(255,255,255,0.05);
-}
-
-:root.dark .search-filter input[type="text"],
-:root.dark .search-filter select {
-  background: var(--card);
-  color: var(--text);
-  border-color: var(--border);
-}
-/* ---------- About Page Enhancements ---------- */
-
-/* Main wrapper is already defined; this just tightens spacing a bit */
-.about-wrapper {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem 2.4rem;
-  background-color: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  border: 1px solid var(--border);
-}
-
-/* Page title (already used above wrapper) */
-.about-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 1.2rem;
-  color: #003366;
-}
-
-:root.dark .about-title {
-  color: var(--link);
-}
-
-/* Paragraph style */
-.about-text {
-  font-size: 1.02rem;
-  line-height: 1.6rem;
-  color: var(--text);
-  margin-bottom: 0.9rem;
-}
-
-/* Section headings inside the about box */
-.about-wrapper h3 {
-  margin-top: 1.6rem;
-  margin-bottom: 0.6rem;
-  font-size: 1.25rem;
-  color: #003366;
-}
-
-.about-wrapper h4 {
-  margin-top: 1.1rem;
-  margin-bottom: 0.4rem;
-  font-size: 1.05rem;
-  color: #004a80;
-}
-
-:root.dark .about-wrapper h3,
-:root.dark .about-wrapper h4 {
-  color: var(--link);
-}
-
-/* Lists in the about page (you’re using <ul class="about-text">) */
-ul.about-text {
-  padding-left: 1.2rem;
-  margin-top: 0.2rem;
-  margin-bottom: 0.8rem;
-}
-
-ul.about-text li {
-  margin-bottom: 0.35rem;
-  line-height: 1.5rem;
-}
-
-/* Softer divider lines inside the about box */
-.about-wrapper hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 1.4rem 0;
-  opacity: 0.8;
-}
-
-/* Team box at the bottom is already styled; just keeping it consistent */
-.team-box {
-  margin-top: 1.8rem;
-  background: var(--card);
-  padding: 1.1rem 1.4rem;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-}
-
-.team-title {
-  font-weight: bold;
-  margin-bottom: 0.6rem;
-  color: #003366;
-}
-
-:root.dark .team-title {
-  color: var(--link);
-}
-
-.team-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-.team-list li {
-  margin-bottom: 0.25rem;
-  font-size: 1rem;
-  color: var(--text);
-}
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.modal textarea {
-  width: 100%;
-  box-sizing: border-box;   /* makes width include padding */
-  padding: 10px 12px;       /* matches other input paddings */
-  margin-top: 0.75rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-size: 0.95rem;
-  background: var(--bg);
-  color: var(--text);
-  resize: vertical;         /* optional: keeps it neat */
-}
-
-
-.modal-actions {
-  margin-top: 0.75rem;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-/* ----- Shared modal styling with site theme ----- */
-
-.modal {
-  background: var(--card);
-  color: var(--text);
-  padding: 1.5rem 1.75rem;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 100%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
-  border: 1px solid var(--border);
-}
-
-.modal h3 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  color: #003366;
-  font-size: 1.15rem;
-}
-
-:root.dark .modal h3 {
-  color: var(--link);
-}
-
-.modal textarea {
-  width: 100%;
-  margin-top: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  padding: 8px 10px;
-  font-size: 0.95rem;
-  background: var(--bg);
-  color: var(--text);
-}
-
-.modal textarea:focus {
-  outline: none;
-  border-color: var(--link);
-  box-shadow: 0 0 4px rgba(0,85,170,0.3);
-}
-
-.modal-actions {
-  margin-top: 0.9rem;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-/* Modal buttons styled like the rest of the site */
-.modal-btn {
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-}
-
-/* Primary / Save button */
-.modal-btn-primary {
-  background-color: #0055aa;
-  color: white;
-}
-
-.modal-btn-primary:hover {
-  background-color: #004080;
-}
-
-/* Secondary / Cancel button */
-.modal-btn-secondary {
-  background: var(--card);
-  color: #003366;
-  border: 1px solid var(--border);
-}
-
-.modal-btn-secondary:hover {
-  background: var(--border);
-}
-
-/* Dark mode tweaks */
-:root.dark .modal-btn-secondary {
-  background: var(--card);
-  color: var(--link);
-}
-:root.dark .modal-btn-secondary:hover {
-  background: var(--border);
-}
-
-.modal-danger .modal-btn-primary {
-  background-color: #d32f2f;
-}
-.modal-danger .modal-btn-primary:hover {
-  background-color: #a82828;
-}
-
-/* ---------- Service Grid ---------- */
-.service-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-}
-
-.service-header-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.service-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.service-card {
-  background: var(--card);
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 15px 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-  position: relative;
-}
-
-.service-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-}
-
-.service-card h3 {
-  margin-top: 0;
-  color: #003366;
-}
-
-:root.dark .service-card h3 {
-  color: var(--link);
-}
-
-.service-card p {
-  margin: 6px 0;
-}
-
-.actions {
-  display: flex;
-  justify-content: flex-start;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.inline-form {
-  display: inline;
-}
-
-.card-badge-you {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: #003366;
-  color: white;
-  font-size: 0.75em;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-}
-
-/* Disabled Add button */
-.disabled-btn {
-  opacity: 0.55;
-  cursor: not-allowed;
-  background-color: #8ea8c8 !important;
-  color: white !important;
-}
-
-/* ---- SERVICES LIST ---- */
-.service-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.service-header-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.service-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px; /* match resources/events */
-}
-
-.service-card {
-    background-color: var(--card);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.card-badge-you {
-    background-color: #4caf50; /* or #003366, pick one */
-    color: white;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    align-self: flex-start;
-    margin-bottom: 0.5rem;
-}
-
-.btn.add-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9rem;
-}
-
-.btn.add-btn.disabled-btn {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.inline-form {
-    display: inline;
-}
-
-.service-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 15px;
-}
-
-.service-header-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
 }

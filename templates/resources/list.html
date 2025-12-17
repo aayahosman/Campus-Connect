@@ -6,7 +6,7 @@
   {% if session.get('logged_in') %}
   <a href="{{ url_for('resources.add_resource') }}" class="btn">+ Add New Resource</a>
   {% else %}
-  <a href="{{ url_for('resources.add_resource') }}" 
+  <a href="{{ url_for('resources.add_resource') }}"
        class="btn add-btn disabled-btn"
        title="Login required">
        + Add New Resource
@@ -15,14 +15,18 @@
 </div>
 
 <form method="get" class="search-filter">
-  <input
-    type="text"
-    name="q"
-    placeholder="Search resources..."
-    value="{{ q or '' }}"
-  >
+  <label for="q" class="sr-only">Search resources</label>
+<input
+  id="q"
+  type="text"
+  name="q"
+  placeholder="Search resources..."
+  value="{{ q or '' }}"
+>
 
-  <select name="category">
+<label for="category" class="sr-only">Filter by category</label>
+<select id="category" name="category">
+
     <option value="">All categories</option>
     {% for c in categories %}
       <option value="{{ c }}"
@@ -55,8 +59,7 @@
 
     <!-- ALWAYS show content -->
     <p><strong>Category:</strong> {{ r.category }}</p>
-    <p>{{ r.description }}</p>
-    <p><strong>Description: </strong> {{ r.description }}</p>
+    <p><strong>Description:</strong> {{ r.description }}</p>
 
     {% if r.contact_info %}
       <p><strong>Contact:</strong> {{ r.contact_info }}</p>
@@ -69,7 +72,7 @@
     <div class="actions">
       <a href="{{ url_for('resources.edit_resource', resource_id=r.resource_id) }}" class="btn-sm edit">Edit</a>
 
-      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}" 
+      <form action="{{ url_for('resources.delete_resource', resource_id=r.resource_id) }}"
             method="POST" class="inline-form">
         <button type="submit" class="btn-sm delete">Delete</button>
       </form>
@@ -89,25 +92,39 @@
       {% endif %}
 
       <div class="vote-box">
-        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','up')">⬆</button>
-        <span>{{ r.upvotes }}</span>
+        <button class="vote-btn"
+                aria-label="Upvote resource"
+                onclick="vote('resource','{{ r.resource_id }}','up')">⬆</button>
 
-        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','down')">⬇</button>
-        <span>{{ r.downvotes }}</span>
+        <button class="vote-btn"
+                aria-label="Downvote resource"
+                onclick="vote('resource','{{ r.resource_id }}','down')">⬇</button>
       </div>
     </div>
 
     <!-- COMMENTS -->
     <div class="comment-section" data-resource-id="{{ r.resource_id }}">
-      <button class="toggle-comments-btn" onclick="toggleComments('{{ r.resource_id }}')">
+      <button class="toggle-comments-btn"
+        aria-expanded="false"
+        aria-label="Toggle comments"
+        onclick="toggleComments('{{ r.resource_id }}')">
         💬 View Comments
-      </button>
+</button>
+
 
       <div class="comments-area" id="comments-box-{{ r.resource_id }}" style="display:none;">
         <div class="comments-list" id="comments-{{ r.resource_id }}"></div>
 
         {% if session.get('logged_in') %}
-          <textarea class="comment-input" id="input-{{ r.resource_id }}" placeholder="Write a comment..."></textarea>
+          <label for="input-{{ r.resource_id }}" class="sr-only">
+            Write a comment
+          </label>
+          <textarea
+            class="comment-input"
+            id="input-{{ r.resource_id }}"
+            placeholder="Write a comment...">
+          </textarea>
+
           <button class="comment-post-btn" onclick="postResourceComment('{{ r.resource_id }}')">Post</button>
         {% else %}
           <p class="comment-login-msg">Login to leave a comment.</p>
@@ -129,7 +146,11 @@
 <div id="edit-comment-modal" class="modal-overlay" style="display: none;">
   <div class="modal">
     <h3>Edit your comment</h3>
+    <label for="edit-comment-text" class="sr-only">
+    Edit comment text
+    </label>
     <textarea id="edit-comment-text" rows="4"></textarea>
+
 
     <div class="modal-actions">
       <button id="edit-comment-save-btn" class="modal-btn modal-btn-primary">Save</button>

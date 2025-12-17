@@ -4,16 +4,16 @@
 <div class="form-card">
   <h2>Add a Service</h2>
 
-  <form action="" method="POST">
+  <form action="{{ url_for('services.add_service') }}" method="POST">
 
     <div class="form-group">
-      <label>Service Name:</label>
-      <input type="text" name="service_name" required>
+      <label for="service-name">Service Name</label>
+      <input id="service-name" type="text" name="service_name" required>
     </div>
 
     <div class="form-group">
-      <label for="category">Category:</label>
-      <select id="category" name="category" class="form-control" required>
+      <label for="service-category">Category</label>
+      <select id="service-category" name="category" class="form-control" required>
         <option value="" disabled selected>Select a category</option>
         {% for cat in categories %}
           <option value="{{ cat }}">{{ cat }}</option>
@@ -21,15 +21,14 @@
       </select>
     </div>
 
-
     <div class="form-group">
-      <label>Price Range:</label>
-      <input type="text" name="price_range" placeholder="$15–$30">
+      <label for="price-range">Price Range</label>
+      <input id="price-range" type="text" name="price_range" placeholder="$15–$30">
     </div>
 
     <div class="form-group">
-      <label>Location Type:</label>
-      <select name="service_location_type">
+      <label for="location-type">Location Type</label>
+      <select id="location-type" name="service_location_type">
         <option value="on-campus">On Campus</option>
         <option value="off-campus">Off Campus</option>
         <option value="mobile">Mobile</option>
@@ -38,22 +37,22 @@
     </div>
 
     <div class="form-group">
-      <label>Availability:</label>
-      <input type="text" name="availability" placeholder="Weekends, Evenings, etc.">
+      <label for="availability">Availability</label>
+      <input id="availability" type="text" name="availability" placeholder="Weekends, Evenings, etc.">
     </div>
 
     <div class="form-group">
-      <label>Contact Method:</label>
-      <input type="text" name="contact_method" placeholder="Instagram, Phone, Email">
+      <label for="contact-method">Contact Method</label>
+      <input id="contact-method" type="text" name="contact_method" placeholder="Instagram, Phone, Email">
     </div>
 
     <div class="form-group">
-      <label>Description:</label>
-      <textarea name="description" rows="4" placeholder="Describe the service offered..."></textarea>
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4"
+        placeholder="Describe the service offered..."></textarea>
     </div>
 
     <button class="submit-btn" type="submit">Add Service</button>
-
   </form>
 
   <a class="back-link" href="{{ url_for('services.list_services') }}">Back to Services</a>

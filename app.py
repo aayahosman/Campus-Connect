@@ -1,6 +1,23 @@
-from flask import (Flask, render_template, make_response, url_for, request,
-                   redirect, flash, session, send_from_directory, jsonify)
-from werkzeug.utils import secure_filename
+"""
+Campus Connect - Main Application Module
+
+This is the Flask application entry point that:
+  - Initializes the Flask app with security configuration
+  - Registers all feature blueprints (resources, events, services, comments, votes, auth)
+  - Defines top-level routes (home page, about page)
+  - Manages the application lifecycle
+
+Blueprints registered here handle their respective domains:
+  - auth_bp (login.py): User authentication and registration
+  - resource_bp: Community resources listing and management
+  - event_bp: Campus events listing and management
+  - services_bp: Student services listing and management
+  - comment_routes: Comments on resources and events
+  - votes_bp: Upvoting/downvoting system
+"""
+
+from flask import (Flask, render_template, url_for, request,
+                   redirect, flash, session,)
 import secrets
 import cs304dbi as dbi
 from resources_routes import resource_bp
@@ -14,8 +31,6 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex()
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-print(dbi.conf('cs304jas_db'))
-
 from login import auth_bp
 app.register_blueprint(auth_bp)
 app.register_blueprint(resource_bp)
@@ -26,7 +41,6 @@ app.register_blueprint(services_bp)
 
 @app.route('/')
 def index():
-    print("index")
     return render_template('login.html', page_title='Main Page')
 
 @app.route('/about/')
