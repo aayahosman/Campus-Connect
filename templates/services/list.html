@@ -27,14 +27,18 @@
 </div>
 
 <form method="get" class="search-filter">
+
+  <label for="service-q" class="sr-only">Search services</label>
   <input
     type="text"
+    id="service-q"
     name="q"
     placeholder="Search services..."
     value="{{ q or '' }}"
   >
 
-  <select name="category">
+  <label for="service-category" class="sr-only">Filter services by category</label>
+  <select id="service-category" name="category">
     <option value="">All categories</option>
     {% for c in categories %}
       <option value="{{ c }}"

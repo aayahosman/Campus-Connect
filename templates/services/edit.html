@@ -6,15 +6,25 @@
   <form action="{{ url_for('services.edit_service', service_id=service.service_id) }}" method="POST">
 
     <div class="form-group">
-      <label>Service Name:</label>
-      <input type="text" name="service_name" value="{{ service.service_name }}" required>
+      <label for="service-name">Service Name</label>
+      <input
+        id="service-name"
+        type="text"
+        name="service_name"
+        value="{{ service.service_name }}"
+        required
+      >
     </div>
 
     <div class="form-group">
-      <label for="category">Category:</label>
-      <select id="category" name="category" class="form-control" required>
+      <label for="service-category">Category</label>
+      <select
+        id="service-category"
+        name="category"
+        class="form-control"
+        required
+      >
         <option value="" disabled>Select a category</option>
-
         {% for cat in categories %}
           <option value="{{ cat }}"
             {% if cat == service.category %}selected{% endif %}>
@@ -24,15 +34,22 @@
       </select>
     </div>
 
-
     <div class="form-group">
-      <label>Price Range:</label>
-      <input type="text" name="price_range" value="{{ service.price_range }}">
+      <label for="price-range">Price Range</label>
+      <input
+        id="price-range"
+        type="text"
+        name="price_range"
+        value="{{ service.price_range }}"
+      >
     </div>
 
     <div class="form-group">
-      <label>Location Type:</label>
-      <select name="service_location_type">
+      <label for="location-type">Location Type</label>
+      <select
+        id="location-type"
+        name="service_location_type"
+      >
         <option value="on-campus" {% if service.service_location_type == 'on-campus' %}selected{% endif %}>On Campus</option>
         <option value="off-campus" {% if service.service_location_type == 'off-campus' %}selected{% endif %}>Off Campus</option>
         <option value="mobile" {% if service.service_location_type == 'mobile' %}selected{% endif %}>Mobile</option>
@@ -41,23 +58,37 @@
     </div>
 
     <div class="form-group">
-      <label>Availability:</label>
-      <input type="text" name="availability" value="{{ service.availability }}">
+      <label for="availability">Availability</label>
+      <input
+        id="availability"
+        type="text"
+        name="availability"
+        value="{{ service.availability }}"
+      >
     </div>
 
     <div class="form-group">
-      <label>Contact Method:</label>
-      <input type="text" name="contact_method" value="{{ service.contact_method }}">
+      <label for="contact-method">Contact Method</label>
+      <input
+        id="contact-method"
+        type="text"
+        name="contact_method"
+        value="{{ service.contact_method }}"
+      >
     </div>
 
     <div class="form-group">
-      <label>Description:</label>
-      <textarea name="description" rows="4">{{ service.description }}</textarea>
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+      >{{ service.description }}</textarea>
     </div>
 
     <button class="submit-btn" type="submit">Save Changes</button>
-
   </form>
+
 
   <a class="back-link" href="{{ url_for('services.list_services') }}">Back to Services</a>
 </div>

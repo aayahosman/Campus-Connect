@@ -1,11 +1,34 @@
-# db/vote_db.py
+"""
+vote_db - Voting/Rating System Database Layer
+
+Provides database operations for the upvote/downvote system:
+  - item_exists: Check if target exists
+  - get_previous_vote: Retrieve user's existing vote
+  - insert_vote: Create a new vote
+  - update_vote: Change a user's vote (e.g., up → down)
+  - apply_vote_count_change: Update aggregate vote counts
+  - set_status_based_on_votes: Handle auto-flagging/removal by vote thresholds
+
+Votes support both upvotes and downvotes. When vote counts cross thresholds,
+items can be automatically flagged or removed (configurable per feature).
+"""
+
 import cs304dbi as dbi
 
 
 def _table_for_item_type(item_type):
     """
     Map item type to its table name and id column.
-    Prevents unsafe SQL from user input.
+    Prevents unsafe SQL from user input by using a whitelist.
+
+    Args:
+        item_type (str): Either 'event' or 'resource'
+
+    Returns:
+        tuple: (table_name, id_column_name)
+
+    Raises:
+        ValueError: If item_type is not recognized
     """
     if item_type == "event":
         return "events", "event_id"
@@ -15,7 +38,17 @@ def _table_for_item_type(item_type):
 
 
 def item_exists(conn, item_type, item_id):
-    """Return True if the target event/resource exists."""
+    """
+    Check if a target event or resource exists.
+
+    Args:
+        conn: Database connection
+        item_type (str): 'event' or 'resource'
+        item_id (int): The target item's id
+
+    Returns:
+        bool: True if the item exists, False otherwise
+    """
     table, id_col = _table_for_item_type(item_type)
     curs = dbi.dict_cursor(conn)
 
@@ -28,7 +61,20 @@ def item_exists(conn, item_type, item_id):
 
 
 def get_previous_vote(conn, user_id, item_type, item_id):
-    """Return the user's previous vote for this item, or None."""
+    """
+    Retrieve a user's existing vote on an item.
+    Used to detect vote changes (e.g., switching from up to down).
+
+    Args:
+        conn: Database connection
+        user_id (int): The voting user
+        item_type (str): 'event' or 'resource'
+        item_id (int): The target item
+
+    Returns:
+        dict: Vote record with 'vote' field ('up' or 'down')
+              Returns None if no vote exists yet
+    """
     curs = dbi.dict_cursor(conn)
     curs.execute(
         """
@@ -42,7 +88,16 @@ def get_previous_vote(conn, user_id, item_type, item_id):
 
 
 def insert_vote(conn, user_id, item_type, item_id, vote_type):
-    """Insert a new vote row."""
+    """
+    Record a new vote for a user on an item.
+
+    Args:
+        conn: Database connection
+        user_id (int): The voting user
+        item_type (str): 'event' or 'resource'
+        item_id (int): The target item
+        vote_type (str): 'up' or 'down'
+    """
     curs = dbi.cursor(conn)
     curs.execute(
         """
@@ -54,7 +109,16 @@ def insert_vote(conn, user_id, item_type, item_id, vote_type):
 
 
 def update_vote(conn, user_id, item_type, item_id, vote_type):
-    """Update an existing vote row."""
+    """
+    Change a user's existing vote (e.g., switch from up to down).
+
+    Args:
+        conn: Database connection
+        user_id (int): The voting user
+        item_type (str): 'event' or 'resource'
+        item_id (int): The target item
+        vote_type (str): New vote type ('up' or 'down')
+    """
     curs = dbi.cursor(conn)
     curs.execute(
         """
@@ -69,7 +133,19 @@ def update_vote(conn, user_id, item_type, item_id, vote_type):
 def apply_vote_count_change(conn, item_type, item_id, previous_vote, new_vote):
     """
     Update aggregate upvote/downvote counts on the target item.
-    Handles first-time votes and vote switches.
+    Handles three scenarios: first-time votes, vote switches, and vote reversals.
+
+    Args:
+        conn: Database connection
+        item_type (str): 'event' or 'resource'
+        item_id (int): The target item
+        previous_vote (str or None): User's prior vote ('up', 'down', or None)
+        new_vote (str): New vote type ('up' or 'down')
+
+    Examples:
+        - previous_vote=None, new_vote='up' → upvotes += 1
+        - previous_vote='up', new_vote='down' → upvotes -= 1, downvotes += 1
+        - previous_vote='up', new_vote='up' → no change (prevented at route level)
     """
     table, id_col = _table_for_item_type(item_type)
     curs = dbi.cursor(conn)
