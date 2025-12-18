@@ -140,7 +140,16 @@ Campus-Connect/
 - Theme preference persists across pages
 
 ---
+### Virtual Environment Setup (CS304)
 
+We followed the standard CS304 virtual environment setup:
+
+python3.9 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install flask pymysql bcrypt pillow
+~cs304flask/pub/bin/install-cs304dbi
+---
 ## Sample Test Account
 
 Email: testing@email.com  
