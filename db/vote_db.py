@@ -151,3 +151,11 @@ def apply_status_or_delete(conn, item_type, item_id):
         [status, item_id]
     )
     return status
+
+def update_item_status(conn, item_type, item_id, status):
+    table, id_col = _table_for_item_type(item_type)
+    curs = dbi.cursor(conn)
+    curs.execute(
+        f"UPDATE {table} SET status=%s WHERE {id_col}=%s",
+        [status, item_id]
+    )

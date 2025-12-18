@@ -222,6 +222,12 @@ def delete_event(event_id):
 @login_required
 def rsvp(event_id):
     conn = getConn()
+   
+    event = event_db.get_event_by_id(conn, event_id)
+    if not event:
+        flash("This event no longer exists.")
+        return redirect(url_for("event_bp.list_events"))
+
     user_id = session['user_id']
     status = request.form.get('status')
 
