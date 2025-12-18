@@ -254,3 +254,7 @@ def events_json():
         }
         for r in records
     ])
+
+@event_bp.route('/calendar')
+def calendar_view():
+    return render_template('calendar_view.html')
