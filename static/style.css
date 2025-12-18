@@ -1338,3 +1338,63 @@ ul.about-text li {
   margin-bottom: 0.5rem;
 }
 
+/* ============================================================
+   MODALS (Edit/Delete comment)
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;                 
+  display: none;          
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+}
+
+.modal {
+  width: min(520px, 92vw);
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.modal textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.modal-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.modal-btn-secondary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
