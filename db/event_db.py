@@ -142,13 +142,28 @@ def update_event(conn, event_id, title, date_of_event, category, description, co
 
 def delete_event_and_rsvps(conn, event_id):
     """
-    Delete an event and all associated RSVPs.
+    Delete an event and all associated dependent rows
+    (comments and RSVPs).
     """
     curs = dbi.cursor(conn)
 
-    # Remove dependent RSVP rows first to maintain referential integrity
-    curs.execute("DELETE FROM rsvp WHERE event_id=%s", [event_id])
-    curs.execute("DELETE FROM events WHERE event_id=%s", [event_id])
+    # 1. delete comments FIRST (FK dependency)
+    curs.execute(
+        "DELETE FROM comments WHERE event_id=%s",
+        [event_id]
+    )
+
+    # 2. delete RSVPs
+    curs.execute(
+        "DELETE FROM rsvp WHERE event_id=%s",
+        [event_id]
+    )
+
+    # 3. delete the event LAST
+    curs.execute(
+        "DELETE FROM events WHERE event_id=%s",
+        [event_id]
+    )
 
     conn.commit()
 
