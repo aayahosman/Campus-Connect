@@ -284,6 +284,10 @@ footer {
   font-weight: 600;
 }
 
+:root.dark .status.active {
+  color: #66e08a;
+}
+
 .status.inactive {
   color: #b33;
   font-weight: 600;
@@ -1242,6 +1246,10 @@ ul.about-text li {
 .verified {
   color: #2e7d32;
   font-weight: bold;
+}
+
+:root.dark .verified {
+  color: #66e08a;
 }
 
 .flagged {
