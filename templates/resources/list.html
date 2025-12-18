@@ -92,14 +92,14 @@
       {% endif %}
 
       <div class="vote-box">
-        <button class="vote-btn"
-                aria-label="Upvote resource"
-                onclick="vote('resource','{{ r.resource_id }}','up')">⬆</button>
+        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','up')">⬆</button>
+        <span>{{ r.upvotes }}</span>
 
-        <button class="vote-btn"
-                aria-label="Downvote resource"
-                onclick="vote('resource','{{ r.resource_id }}','down')">⬇</button>
+        <button class="vote-btn" onclick="vote('resource','{{ r.resource_id }}','down')">⬇</button>
+        <span>{{ r.downvotes }}</span>
       </div>
+
+      
     </div>
 
     <!-- COMMENTS -->
