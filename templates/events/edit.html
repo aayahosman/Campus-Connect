@@ -3,24 +3,34 @@
 <div class="form-card">
   <h2>Edit Event</h2>
 
-  <form action="{{ url_for('event_bp.edit_event', event_id=event.event_id) }}" method="POST">
+  {% if event.image_filename %}
+  <div class="form-group">
+    <label>Current event image:</label>
+    <img src="{{ url_for('uploaded_file', filename=event.image_filename) }}"
+         alt="Current image for {{ event.title }}"
+         style="max-width: 100%; max-height: 250px; border-radius: 8px; margin-top: 0.5rem;">
+  </div>
+  {% endif %}
+
+  <form action="{{ url_for('event_bp.edit_event', event_id=event.event_id) }}"
+        method="POST"
+        enctype="multipart/form-data">
 
     <div class="form-group">
       <label for="edit-title">Title</label>
-      <input id="edit-title" type="text" name="title" value="{{ event.title }}" required>
+      <input id="edit-title" type="text" name="title"
+             value="{{ event.title }}" required>
     </div>
 
     <div class="form-group">
       <label for="edit-datetime">Date & Time</label>
       <input id="edit-datetime" type="datetime-local" name="date_of_event"
-            value="{{ event.date_of_event }}" required>
+             value="{{ event.date_of_event }}" required>
     </div>
 
     <div class="form-group">
       <label for="edit-category">Event Category</label>
-      <select id="edit-category" name="category" class="form-control" required>
-        <option value="" disabled>Select an event category</option>
-
+      <select id="edit-category" name="category" required>
         {% for c in [
           "Academic Event", "Activism", "Basic Needs Support",
           "Career & Professional Development", "Civic Engagement",
@@ -40,39 +50,48 @@
     <div class="form-group">
       <label for="edit-contact">Contact Info</label>
       <input id="edit-contact" type="text" name="contact_info"
-            value="{{ event.contact_info }}">
+             value="{{ event.contact_info }}">
     </div>
 
     <div class="form-group">
       <label for="edit-description">Description</label>
-      <textarea id="edit-description" name="description" rows="4">
-        {{ event.description }}
-      </textarea>
+      <textarea id="edit-description" name="description" rows="4">{{ event.description }}</textarea>
     </div>
 
-    <fieldset class="form-group">
-      <legend>Location</legend>
+    <!-- Replace image -->
+    <div class="form-group">
+      <label for="image">Replace Event Spam (optional)</label>
+      <input type="file" name="image" id="image" accept="image/*">
+    </div>
 
-      <label for="edit-address1" class="sr-only">Address line 1</label>
-      <input id="edit-address1" type="text" name="address1" placeholder="Address 1">
+    <!-- Location -->
+    <div class="form-group">
+      <label>Location</label>
 
-      <label for="edit-address2" class="sr-only">Address line 2</label>
-      <input id="edit-address2" type="text" name="address2" placeholder="Address 2">
+      <input type="text" name="address1"
+             placeholder="Address 1"
+             value="{{ event.address1 }}">
 
-      <label for="edit-city" class="sr-only">City</label>
-      <input id="edit-city" type="text" name="city" placeholder="City">
+      <input style="margin-top:8px;" type="text" name="address2"
+             placeholder="Address 2"
+             value="{{ event.address2 }}">
 
-      <label for="edit-state" class="sr-only">State</label>
-      <input id="edit-state" type="text" name="state" placeholder="State">
+      <input style="margin-top:8px;" type="text" name="city"
+             placeholder="City"
+             value="{{ event.city }}">
 
-      <label for="edit-postal" class="sr-only">Postal Code</label>
-      <input id="edit-postal" type="text" name="postal_code" placeholder="Postal Code">
-    </fieldset>
+      <input style="margin-top:8px;" type="text" name="state"
+             placeholder="State"
+             maxlength="2"
+             value="{{ event.state }}">
 
-  <button class="submit-btn" type="submit">Save Changes</button>
+      <input style="margin-top:8px;" type="text" name="postal_code"
+             placeholder="Postal Code"
+             value="{{ event.postal_code }}">
+    </div>
 
-</form>
-
+    <button class="submit-btn" type="submit">Save Changes</button>
+  </form>
 
   <a class="back-link" href="{{ url_for('event_bp.list_events') }}">Back to Events</a>
 </div>

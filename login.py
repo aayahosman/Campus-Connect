@@ -10,13 +10,18 @@ def get_conn():
     """Return a database connection."""
     return dbi.connect()
 
-
 @auth_bp.route('/')
 def index():
-    """Render the login page (home route)."""
-    return render_template('login.html', page_title='Campus Connect: Login')
-
-
+    if 'user_id' in session:
+        return render_template(
+            'greet.html',
+            page_title='Home',
+            full_name=session.get('full_name'),
+            email=session.get('email')
+        )
+    else:
+        return render_template('login.html', page_title='Login')
+    
 @auth_bp.route('/about')
 def about():
     """Render the About page."""

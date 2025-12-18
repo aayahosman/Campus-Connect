@@ -4,6 +4,7 @@ from db import vote_db
 
 votes_bp = Blueprint('votes_bp', __name__, url_prefix='/votes')
 
+
 def getConn():
     """Return a database connection."""
     return dbi.connect()
@@ -52,7 +53,7 @@ def vote(item_type, item_id):
     else:
         vote_db.insert_vote(conn, user_id, item_type, item_id, vote_type)
 
-    # Update aggregate vote counts on the item
+    # Update aggregate vote counts
     vote_db.apply_vote_count_change(
         conn,
         item_type,
@@ -63,10 +64,9 @@ def vote(item_type, item_id):
 
     # Fetch updated counts
     counts = vote_db.get_vote_counts(conn, item_type, item_id)
-    upv = counts["upvotes"]
     dnv = counts["downvotes"]
 
-    # Hard delete threshold (community removal)
+    # Hard delete threshold
     if dnv >= 50:
         vote_db.delete_item_and_dependencies(conn, item_type, item_id)
         conn.commit()

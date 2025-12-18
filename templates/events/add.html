@@ -4,7 +4,10 @@
 <div class="form-card">
   <h2>Add an Event</h2>
 
-  <form action="{{ url_for('event_bp.add_event') }}" method="POST">
+  
+  <form action="{{ url_for('event_bp.add_event') }}"
+        method="POST"
+        enctype="multipart/form-data">
 
     <div class="form-group">
       <label for="event-title">Title</label>
@@ -14,15 +17,12 @@
     <div class="form-group">
       <label for="event-datetime">Date & Time</label>
       <input id="event-datetime" type="datetime-local" name="date_of_event" required>
-
     </div>
 
     <div class="form-group">
       <label for="event-category">Event Category</label>
-      <select id="event-category" name="category" class="form-control" required>
-
+      <select id="event-category" name="category" required>
         <option value="" disabled selected>Select an event category</option>
-
         <option value="Academic Event">Academic Event</option>
         <option value="Activism">Activism</option>
         <option value="Basic Needs Support">Basic Needs Support</option>
@@ -39,10 +39,8 @@
         <option value="Student Life">Student Life</option>
         <option value="Workshops & Training">Workshops & Training</option>
         <option value="Other">Other</option>
-
       </select>
     </div>
-
 
     <div class="form-group">
       <label for="event-contact">Contact Info</label>
@@ -54,20 +52,24 @@
       <textarea id="event-description" name="description" rows="4"></textarea>
     </div>
 
+   
+    <div class="form-group">
+      <label for="image">Event Spam (optional)</label>
+      <input type="file"
+             name="image"
+             id="image"
+             accept="image/*">
+    </div>
+
+    <!-- Location -->
     <div class="form-group">
       <label>Location</label>
 
-      <label for="address1" class="sr-only">Address line 1</label>
-      <input id="address1" type="text" name="address1" placeholder="Address 1">
+      <input type="text" name="address1" placeholder="Address 1">
+      <input style="margin-top:8px;" type="text" name="address2" placeholder="Address 2">
+      <input style="margin-top:8px;" type="text" name="city" placeholder="City">
 
-      <label for="address2" class="sr-only">Address line 2</label>
-      <input id="address2" style="margin-top:8px;" type="text" name="address2" placeholder="Address 2">
-
-      <label for="city" class="sr-only">City</label>
-      <input id="city" style="margin-top:8px;" type="text" name="city" placeholder="City">
-
-      <label for="state" class="sr-only">State</label>
-      <select id="state" name="state" style="margin-top:8px;">
+      <select name="state" style="margin-top:8px;">
         <option value="" disabled selected>Select state</option>
         <option value="AL">Alabama</option>
         <option value="AK">Alaska</option>
@@ -121,15 +123,12 @@
         <option value="WY">Wyoming</option>
       </select>
 
-      <label for="postal-code" class="sr-only">Postal code</label>
-      <input id="postal-code" style="margin-top:8px;" type="text" name="postal_code" placeholder="Postal Code">
-</div>
+      <input style="margin-top:8px;" type="text" name="postal_code" placeholder="Postal Code">
+    </div>
 
     <button class="submit-btn" type="submit">Add Event</button>
-
   </form>
 
   <a class="back-link" href="{{ url_for('event_bp.list_events') }}">Back to Events</a>
 </div>
-
 {% endblock %}

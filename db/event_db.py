@@ -12,6 +12,7 @@ EVENT_FIELDS = """
     created_at,
     description,
     contact_info,
+    image_filename,
     address1,
     address2,
     city,
