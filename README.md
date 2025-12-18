@@ -149,6 +149,7 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install flask pymysql bcrypt pillow
 ~cs304flask/pub/bin/install-cs304dbi
+
 ---
 ## Sample Test Account
 
