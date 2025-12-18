@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 
 from auth_utils import login_required
 from db import event_db
+from PIL import Image
 
 dbi.conf('cs304jas_db')
 
@@ -93,11 +94,19 @@ def add_event():
                 flash("Invalid image type.")
                 return redirect(url_for('event_bp.add_event'))
 
+            # Validate actual image content
+            try:
+                Image.open(file).verify()
+                file.seek(0)  
+            except Exception:
+                flash("Uploaded file is not a valid image.")
+                return redirect(url_for('event_bp.add_event'))
+
             filename = secure_filename(f"event_{event_id}.{ext}")
             path = os.path.join(current_app.config['UPLOADS'], filename)
 
             file.save(path)
-            os.chmod(path, 0o444)
+            os.chmod(path, 0o644)
 
             curs = conn.cursor()
             curs.execute(
@@ -173,14 +182,19 @@ def edit_event(event_id):
                 flash("Invalid image type.")
                 return redirect(url_for('event_bp.edit_event', event_id=event_id))
 
+            # Validate actual image content
+            try:
+                Image.open(file).verify()
+                file.seek(0)  
+            except Exception:
+                flash("Uploaded file is not a valid image.")
+                return redirect(url_for('event_bp.edit_event', event_id=event_id))
+
             filename = secure_filename(f"event_{event_id}.{ext}")
             path = os.path.join(current_app.config['UPLOADS'], filename)
 
-            if os.path.exists(path):
-                os.remove(path)
-
             file.save(path)
-            os.chmod(path, 0o444)
+            os.chmod(path, 0o644)
 
             curs = conn.cursor()
             curs.execute(
@@ -194,6 +208,10 @@ def edit_event(event_id):
 
     if event.get('date_of_event'):
         event['date_of_event'] = event['date_of_event'].strftime('%Y-%m-%dT%H:%M')
+
+    for field in ['address1', 'address2', 'city', 'state', 'postal_code']:
+        if event.get(field) is None:
+            event[field] = ''
 
     categories = sorted(EVENT_CATEGORIES)
     return render_template('events/edit.html', event=event, categories=categories)

@@ -38,7 +38,7 @@ app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
 # File upload configuration (TEAM SHARED)
 app.config['UPLOADS'] = '/students/cs304jas/uploads'
-app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB
+app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024  # 8MB
 
 print(dbi.conf('cs304jas_db'))
 
