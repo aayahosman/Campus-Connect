@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+import cs304dbi as dbi
 from cs304dbi import connect
 import datetime
 from auth_utils import login_required
@@ -6,6 +7,7 @@ from flask import jsonify
 import os
 from flask import current_app
 from werkzeug.utils import secure_filename
+from db import event_db
 
 dbi.conf('cs304jas_db')
 
@@ -102,17 +104,15 @@ def add_event():
                 flash("Invalid image type.")
                 return redirect(url_for('event_bp.add_event'))
             filename = secure_filename(f"event_{event_id}.{ext}")
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            upload_dir = current_app.config['UPLOAD_FOLDER']
-            os.makedirs(upload_dir, exist_ok=True)
+            upload_dir = current_app.config['UPLOADS']
+            path = os.path.join(current_app.config['UPLOADS'], filename)
             file.save(path)
             os.chmod(path, 0o444)
             curs.execute(
-                '''UPDATE events
-                SET image_filename = %s
-                WHERE event_id = %s''',
-                (filename, event_id)
-            )
+            '''UPDATE events
+            SET image_filename = %s
+            WHERE event_id = %s''',
+            (filename, event_id))
             conn.commit()
         flash("Event created successfully!")
         return redirect(url_for('event_bp.list_events'))
@@ -209,7 +209,11 @@ def edit_event(event_id):
                 return redirect(url_for('event_bp.edit_event', event_id=event_id))
 
             filename = secure_filename(f"event_{event_id}.{ext}")
-            path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            path = os.path.join(current_app.config['UPLOADS'], filename)
+
+            # If file exists, remove it (it is read-only)
+            if os.path.exists(path):
+                os.remove(path)
 
             file.save(path)
             os.chmod(path, 0o444)
@@ -220,7 +224,7 @@ def edit_event(event_id):
                    WHERE event_id = %s''',
                 (filename, event_id)
             )
-
+            conn.commit()
         flash("Event updated successfully!")
         return redirect(url_for('event_bp.list_events'))
 

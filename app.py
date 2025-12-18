@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = secrets.token_hex()
 app.config['TRAP_BAD_REQUEST_ERRORS'] = True
 
-app.config['UPLOAD_FOLDER'] = '/students/team_xyz/uploads'
+app.config['UPLOADS'] = '/students/cs304jas/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024  # 2MB
 
 print(dbi.conf('cs304jas_db'))
@@ -45,7 +45,7 @@ def about():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOADS'], filename)
 
 
 if __name__ == '__main__':
