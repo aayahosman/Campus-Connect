@@ -26,20 +26,32 @@
   </div>
 </div>
 
-
 <form method="get" class="search-filter">
+
+  <label for="service-q" class="sr-only">Search services</label>
   <input
     type="text"
+    id="service-q"
     name="q"
     placeholder="Search services..."
     value="{{ q or '' }}"
   >
 
+  <label for="service-category" class="sr-only">Filter services by category</label>
+  <select id="service-category" name="category">
+    <option value="">All categories</option>
+    {% for c in categories %}
+      <option value="{{ c }}"
+        {% if selected_category == c %}selected{% endif %}>
+        {{ c }}
+      </option>
+    {% endfor %}
+  </select>
+
   <div class="search-filter-buttons">
     <button type="submit" class="search-btn">Search</button>
 
-    <a href="{{ url_for('services.list_services') }}"
-       class="clear-filter-btn">
+    <a href="{{ url_for('services.list_services') }}" class="clear-filter-btn">
       Clear Filters
     </a>
   </div>
@@ -51,6 +63,7 @@
       {% if s.created_by == session.get('user_id') %}
         <div class="card-badge-you">Added by you</div>
       {% endif %}
+
       <h3>{{ s.service_name }}</h3>
       {% if s.category %}<p><strong>Category:</strong> {{ s.category }}</p>{% endif %}
       {% if s.price_range %}<p><strong>Price Range:</strong> {{ s.price_range }}</p>{% endif %}
@@ -58,6 +71,7 @@
       {% if s.service_location_type %}<p><strong>Location Type:</strong> {{ s.service_location_type }}</p>{% endif %}
       {% if s.availability %}<p><strong>Availability:</strong> {{ s.availability }}</p>{% endif %}
       {% if s.contact_method %}<p><strong>Contact:</strong> {{ s.contact_method }}</p>{% endif %}
+
       <div class="actions">
         <a href="{{ url_for('services.edit_service', service_id=s.service_id) }}" class="btn-sm edit">Edit</a>
         <form action="{{ url_for('services.delete_service', service_id=s.service_id) }}" method="POST" class="inline-form">
@@ -66,8 +80,13 @@
       </div>
     </div>
   {% else %}
-    <p>No services posted yet. Add one to get started!</p>
+    {% if q or selected_category %}
+      <p>No services matched your search.</p>
+    {% else %}
+      <p>No services posted yet. Add one to get started!</p>
+    {% endif %}
   {% endfor %}
 </div>
+
 
 {% endblock %}

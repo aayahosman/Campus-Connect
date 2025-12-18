@@ -7,9 +7,9 @@
 
     <a href="{{ url_for('event_bp.calendar_view') }}" class="btn calendar-btn icon-btn">
       <svg class="icon" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5C3.89 4 3 4.9 3 6v14c0 
-        1.1.89 2 2 2h14c1.1 0 2-.9 
-        2-2V6c0-1.1-.9-2-2-2zm0 
+        <path fill="currentColor" d="M19 4h-1V2h-2v2H8V2H6v2H5C3.89 4 3 4.9 3 6v14c0
+        1.1.89 2 2 2h14c1.1 0 2-.9
+        2-2V6c0-1.1-.9-2-2-2zm0
         16H5V9h14v11zM7 11h5v5H7v-5z"/>
       </svg>
       Calendar View
@@ -23,7 +23,7 @@
         Add New Event
       </a>
     {% else %}
-      <a href="{{ url_for('event_bp.add_event') }}" 
+      <a href="{{ url_for('event_bp.add_event') }}"
          class="btn add-btn disabled-btn icon-btn"
          title="Login required">
         <svg class="icon" viewBox="0 0 24 24">
@@ -37,14 +37,18 @@
 </div>
 
 <form method="get" class="search-filter" style="margin-bottom: 1rem;">
+  <label for="event-search" class="sr-only">Search events</label>
   <input
+    id="event-search"
     type="text"
     name="q"
     placeholder="Search events..."
     value="{{ q or '' }}"
   >
 
-  <select name="category">
+
+  <label for="event-category" class="sr-only">Filter events by category</label>
+  <select id="event-category" name="category">
     <option value="">All categories</option>
     {% for c in categories %}
       <option value="{{ c }}"
@@ -131,7 +135,17 @@
         <div class="comments-list" id="comments-event-{{ e.event_id }}"></div>
 
         {% if session.get('logged_in') %}
-          <textarea class="comment-input" id="input-event-{{ e.event_id }}" placeholder="Write a comment..."></textarea>
+        <label for="input-event-{{ e.event_id }}" class="sr-only">
+            Comment on this event
+        </label>
+
+        <textarea
+          class="comment-input"
+          id="input-event-{{ e.event_id }}"
+          placeholder="Write a comment...">
+        </textarea>
+
+
           <button class="comment-post-btn" onclick="postEventComment('{{ e.event_id }}')">Post</button>
         {% else %}
           <p class="comment-login-msg">Login to leave a comment.</p>
@@ -152,8 +166,12 @@
 <!-- Edit Comment Modal -->
 <div id="edit-comment-modal" class="modal-overlay" style="display: none;">
   <div class="modal">
-    <h3>Edit your comment</h3>
-    <textarea id="edit-comment-text" rows="4"></textarea>
+    <label for="edit-comment-text" class="sr-only">
+      Edit your comment text
+    </label>
+
+<textarea id="edit-comment-text" rows="4"></textarea>
+
 
   <div class="modal-actions">
     <button id="edit-comment-save-btn" class="modal-btn modal-btn-primary">Save</button>

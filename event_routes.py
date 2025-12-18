@@ -1,12 +1,14 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import (
+    Blueprint, render_template, request,
+    redirect, url_for, flash, session, jsonify,
+    current_app
+)
 import cs304dbi as dbi
-from cs304dbi import connect
 import datetime
-from auth_utils import login_required
-from flask import jsonify
 import os
-from flask import current_app
 from werkzeug.utils import secure_filename
+
+from auth_utils import login_required
 from db import event_db
 
 dbi.conf('cs304jas_db')
@@ -29,15 +31,17 @@ EVENT_CATEGORIES = [
     "Social",
     "Student Life",
     "Workshops & Training",
+    "Other"
 ]
 
+
 def getConn():
-    return connect()
+    return dbi.connect()
+
 
 @event_bp.route('/')
 def list_events():
     conn = getConn()
-
     q = request.args.get('q', '').strip()
     category = request.args.get('category', '').strip()
 
@@ -49,15 +53,18 @@ def list_events():
         events=events,
         q=q,
         categories=categories,
-        selected_category=category,
+        selected_category=category
     )
+
 
 @event_bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add_event():
     if request.method == 'POST':
+        conn = getConn()
+
         title = request.form['title']
-        date_of_event = request.form['date_of_event'] 
+        date_of_event = request.form['date_of_event']
         category = request.form.get('category')
         description = request.form['description']
         contact_info = request.form.get('contact_info')
@@ -68,73 +75,58 @@ def add_event():
         state = request.form.get('state')
         postal_code = request.form.get('postal_code')
 
-        created_by = session.get('user_id')
-        if created_by is None:
-            flash("You must be logged in to create events.", "warning")
-            return redirect(url_for('auth.index'))
-
+        created_by = session['user_id']
         created_at = datetime.datetime.now()
 
-        curs.execute('''
-            INSERT INTO events (
-                title,
-                date_of_event,
-                category,
-                created_by,
-                created_at,
-                description,
-                contact_info,
-                address1,
-                address2,
-                city,
-                state,
-                postal_code
-            )
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''', (title, date_of_event, category,
-              created_by, created_at,
-              description, contact_info,
-              address1, address2, city, state, postal_code))
-        conn.commit()
-        event_id = curs.lastrowid  # get newly created event id
+        event_id = event_db.insert_event(
+            conn,
+            title, date_of_event, category,
+            created_by, created_at,
+            description, contact_info,
+            address1, address2, city, state, postal_code
+        )
+
         file = request.files.get('image')
-        if file and file.filename != '':
+        if file and file.filename:
             ext = file.filename.rsplit('.', 1)[1].lower()
             if ext not in ['jpg', 'jpeg', 'png', 'gif']:
                 flash("Invalid image type.")
                 return redirect(url_for('event_bp.add_event'))
+
             filename = secure_filename(f"event_{event_id}.{ext}")
-            upload_dir = current_app.config['UPLOADS']
             path = os.path.join(current_app.config['UPLOADS'], filename)
+
             file.save(path)
             os.chmod(path, 0o444)
+
+            curs = conn.cursor()
             curs.execute(
-            '''UPDATE events
-            SET image_filename = %s
-            WHERE event_id = %s''',
-            (filename, event_id))
+                "UPDATE events SET image_filename=%s WHERE event_id=%s",
+                (filename, event_id)
+            )
             conn.commit()
+
         flash("Event created successfully!")
         return redirect(url_for('event_bp.list_events'))
 
     categories = sorted(EVENT_CATEGORIES)
     return render_template('events/add.html', categories=categories)
 
+
 @event_bp.route('/<int:event_id>')
 def event_details(event_id):
     conn = getConn()
-
     event = event_db.get_event_by_id(conn, event_id)
-    if event is None:
+
+    if not event:
         flash("Event not found.")
         return redirect(url_for('event_bp.list_events'))
 
     rsvps = event_db.list_rsvps_yes_maybe(conn, event_id)
 
-    user_id = session.get('user_id')
     user_rsvp = None
-    if user_id is not None:
-        user_rsvp = event_db.get_user_rsvp(conn, event_id, user_id)
+    if 'user_id' in session:
+        user_rsvp = event_db.get_user_rsvp(conn, event_id, session['user_id'])
 
     return render_template(
         'events/detail.html',
@@ -143,64 +135,37 @@ def event_details(event_id):
         user_rsvp=user_rsvp
     )
 
+
 @event_bp.route('/edit/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def edit_event(event_id):
-    """
-    Edit an existing event in the database.
-    """
-
     conn = getConn()
-    curs = conn.cursor(dbi.dictCursor)
+    event = event_db.get_event_by_id(conn, event_id)
 
-    # Fetch the event
-    curs.execute('SELECT * FROM events WHERE event_id=%s', (event_id,))
-    event = curs.fetchone()
-
-    if event is None:
-        flash("Event not found.", "warning")
+    if not event:
+        flash("Event not found.")
         return redirect(url_for('event_bp.list_events'))
 
-    if event['created_by'] != session.get('user_id'):
-        flash("You can only edit events you created!", "warning")
+    if event['created_by'] != session['user_id']:
+        flash("You can only edit events you created.")
         return redirect(url_for('event_bp.list_events'))
 
     if request.method == 'POST':
-        title = request.form['title']
-        date_of_event = request.form['date_of_event']
-        category = request.form.get('category') or event['category']
-        description = request.form['description']
-        contact_info = request.form.get('contact_info')
+        event_db.update_event(
+            conn,
+            event_id,
+            request.form['title'],
+            request.form['date_of_event'],
+            request.form.get('category') or event['category'],
+            request.form['description'],
+            request.form.get('contact_info'),
+            request.form.get('address1'),
+            request.form.get('address2'),
+            request.form.get('city'),
+            request.form.get('state'),
+            request.form.get('postal_code')
+        )
 
-        address1 = request.form.get('address1')
-        address2 = request.form.get('address2')
-        city = request.form.get('city')
-        state = request.form.get('state')
-        postal_code = request.form.get('postal_code')
-
-        # Update event fields
-        curs.execute('''
-            UPDATE events
-            SET
-                title = %s,
-                date_of_event = %s,
-                category = %s,
-                description = %s,
-                contact_info = %s,
-                address1 = %s,
-                address2 = %s,
-                city = %s,
-                state = %s,
-                postal_code = %s
-            WHERE event_id = %s
-        ''', (
-            title, date_of_event, category,
-            description, contact_info,
-            address1, address2, city, state, postal_code,
-            event_id
-        ))
-
-        # Optional image replacement
         file = request.files.get('image')
         if file and file.filename:
             ext = file.filename.rsplit('.', 1)[1].lower()
@@ -211,101 +176,81 @@ def edit_event(event_id):
             filename = secure_filename(f"event_{event_id}.{ext}")
             path = os.path.join(current_app.config['UPLOADS'], filename)
 
-            # If file exists, remove it (it is read-only)
             if os.path.exists(path):
                 os.remove(path)
 
             file.save(path)
             os.chmod(path, 0o444)
 
+            curs = conn.cursor()
             curs.execute(
-                '''UPDATE events
-                   SET image_filename = %s
-                   WHERE event_id = %s''',
+                "UPDATE events SET image_filename=%s WHERE event_id=%s",
                 (filename, event_id)
             )
             conn.commit()
+
         flash("Event updated successfully!")
         return redirect(url_for('event_bp.list_events'))
 
-    if event['date_of_event']:
+    if event.get('date_of_event'):
         event['date_of_event'] = event['date_of_event'].strftime('%Y-%m-%dT%H:%M')
 
     categories = sorted(EVENT_CATEGORIES)
     return render_template('events/edit.html', event=event, categories=categories)
 
 
-
-
-# Delete event
 @event_bp.route('/delete/<int:event_id>', methods=['POST'])
 @login_required
 def delete_event(event_id):
     conn = getConn()
+    owner = event_db.get_event_owner(conn, event_id)
 
-    owner_row = event_db.get_event_owner(conn, event_id)
-    if owner_row is None:
-        flash("Event not found.", "warning")
+    if not owner:
+        flash("Event not found.")
         return redirect(url_for('event_bp.list_events'))
 
-    if owner_row['created_by'] != session.get('user_id'):
-        flash("You can only delete events you created!", "warning")
+    if owner['created_by'] != session['user_id']:
+        flash("You can only delete events you created.")
         return redirect(url_for('event_bp.list_events'))
 
     event_db.delete_event_and_rsvps(conn, event_id)
-    flash("Event and associated RSVPs deleted successfully!")
+    flash("Event deleted.")
     return redirect(url_for('event_bp.list_events'))
+
 
 @event_bp.route('/<int:event_id>/rsvp', methods=['POST'])
 @login_required
 def rsvp(event_id):
     conn = getConn()
-
-    user_id = session.get('user_id')
-    created_at = datetime.datetime.now()
+    user_id = session['user_id']
     status = request.form.get('status')
 
     if not status:
-        flash("Please select an RSVP option.")
+        flash("Please choose an RSVP option.")
         return redirect(url_for('event_bp.event_details', event_id=event_id))
 
+    created_at = datetime.datetime.now()
     existing = event_db.get_existing_rsvp(conn, event_id, user_id)
+
     if existing:
         event_db.update_rsvp(conn, event_id, user_id, status, created_at)
-        message = "Your RSVP has been updated!"
     else:
         event_db.insert_rsvp(conn, event_id, user_id, status, created_at)
-        message = "Your RSVP has been recorded!"
 
-    # Reload event + RSVPs for display (keeps your current behavior)
-    event = event_db.get_event_by_id(conn, event_id)
-    rsvps = event_db.list_rsvps_yes_maybe(conn, event_id)
-    user_rsvp = event_db.get_user_rsvp(conn, event_id, user_id)
+    return redirect(url_for('event_bp.event_details', event_id=event_id))
 
-    return render_template(
-        'events/detail.html',
-        event=event,
-        rsvps=rsvps,
-        user_rsvp=user_rsvp,
-        submitted=message
-    )
-
-@event_bp.route("/calendar")
-def calendar_view():
-    return render_template("calendar_view.html")
 
 @event_bp.route('/api/events')
 def events_json():
     conn = getConn()
     records = event_db.list_events_for_calendar(conn)
 
-    events = []
-    for r in records:
-        events.append({
+    return jsonify([
+        {
             "id": r["event_id"],
             "title": r["title"],
             "start": r["date_of_event"].isoformat() if r["date_of_event"] else None,
             "description": r["description"]
-        })
-
-    return jsonify(events)
+        }
+        for r in records
+    ])

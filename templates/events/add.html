@@ -4,26 +4,25 @@
 <div class="form-card">
   <h2>Add an Event</h2>
 
+  
   <form action="{{ url_for('event_bp.add_event') }}"
-  method="POST"
-  enctype="multipart/form-data">
-
+        method="POST"
+        enctype="multipart/form-data">
 
     <div class="form-group">
-      <label>Title:</label>
-      <input type="text" name="title" required>
+      <label for="event-title">Title</label>
+      <input id="event-title" type="text" name="title" required>
     </div>
 
     <div class="form-group">
-      <label>Date & Time:</label>
-      <input type="datetime-local" name="date_of_event" required>
+      <label for="event-datetime">Date & Time</label>
+      <input id="event-datetime" type="datetime-local" name="date_of_event" required>
     </div>
 
     <div class="form-group">
-      <label>Event Category:</label>
-      <select name="category" class="form-control" required>
+      <label for="event-category">Event Category</label>
+      <select id="event-category" name="category" required>
         <option value="" disabled selected>Select an event category</option>
-
         <option value="Academic Event">Academic Event</option>
         <option value="Activism">Activism</option>
         <option value="Basic Needs Support">Basic Needs Support</option>
@@ -40,21 +39,20 @@
         <option value="Student Life">Student Life</option>
         <option value="Workshops & Training">Workshops & Training</option>
         <option value="Other">Other</option>
-
       </select>
     </div>
 
-
     <div class="form-group">
-      <label>Contact Info:</label>
-      <input type="text" name="contact_info">
+      <label for="event-contact">Contact Info</label>
+      <input id="event-contact" type="text" name="contact_info">
     </div>
 
     <div class="form-group">
-      <label>Description:</label>
-      <textarea name="description" rows="4"></textarea>
+      <label for="event-description">Description</label>
+      <textarea id="event-description" name="description" rows="4"></textarea>
     </div>
 
+   
     <div class="form-group">
       <label for="image">Event Spam (optional)</label>
       <input type="file"
@@ -63,11 +61,14 @@
              accept="image/*">
     </div>
 
+    <!-- Location -->
     <div class="form-group">
-      <label>Location:</label>
+      <label>Location</label>
+
       <input type="text" name="address1" placeholder="Address 1">
       <input style="margin-top:8px;" type="text" name="address2" placeholder="Address 2">
       <input style="margin-top:8px;" type="text" name="city" placeholder="City">
+
       <select name="state" style="margin-top:8px;">
         <option value="" disabled selected>Select state</option>
         <option value="AL">Alabama</option>
@@ -121,14 +122,13 @@
         <option value="WI">Wisconsin</option>
         <option value="WY">Wyoming</option>
       </select>
+
       <input style="margin-top:8px;" type="text" name="postal_code" placeholder="Postal Code">
     </div>
 
     <button class="submit-btn" type="submit">Add Event</button>
-
   </form>
 
   <a class="back-link" href="{{ url_for('event_bp.list_events') }}">Back to Events</a>
 </div>
-
 {% endblock %}
